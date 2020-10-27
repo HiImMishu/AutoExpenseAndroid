@@ -2,6 +2,7 @@ package com.misiak.android.autoexpense.network
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.misiak.android.autoexpense.network.service.CarService
+import com.misiak.android.autoexpense.network.service.FuelExpenseService
 import com.misiak.android.autoexpense.network.service.UserService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
@@ -29,4 +30,5 @@ object Network {
 
     val users = retrofit.create(UserService::class.java)
     val cars = retrofit.create(CarService::class.java)
+    val fuelExpenses = retrofit.create(FuelExpenseService::class.java)
 }

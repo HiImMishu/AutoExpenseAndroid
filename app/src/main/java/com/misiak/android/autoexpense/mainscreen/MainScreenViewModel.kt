@@ -29,7 +29,7 @@ class MainScreenViewModel(private val repository: CarRepository) : ViewModel() {
         refreshData()
     }
 
-    fun refreshData() {
+    private fun refreshData() {
         viewModelScope.launch {
             when (repository.refreshCars()) {
                 is ApiResult.NetworkError -> _connectionError.value = true

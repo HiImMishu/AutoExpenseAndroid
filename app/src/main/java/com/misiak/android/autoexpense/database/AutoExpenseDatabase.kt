@@ -1,15 +1,16 @@
 package com.misiak.android.autoexpense.database
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
 import com.misiak.android.autoexpense.database.dao.CarDao
 import com.misiak.android.autoexpense.database.dao.UserDao
 import com.misiak.android.autoexpense.database.entity.Car
+import com.misiak.android.autoexpense.database.entity.Engine
+import com.misiak.android.autoexpense.database.entity.FuelExpense
 import com.misiak.android.autoexpense.database.entity.User
 
-@Database(entities = [User::class, Car::class], version = 2, exportSchema = false)
+@Database(entities = [User::class, Car::class, FuelExpense::class, Engine::class], version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class AutoExpenseDatabase : RoomDatabase() {
     abstract val userDao: UserDao
     abstract val carDao: CarDao

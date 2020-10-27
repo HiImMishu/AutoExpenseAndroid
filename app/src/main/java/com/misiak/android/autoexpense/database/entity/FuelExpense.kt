@@ -1,0 +1,17 @@
+package com.misiak.android.autoexpense.database.entity
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import java.util.*
+
+@Entity
+data class FuelExpense(
+    @PrimaryKey val id: Long,
+    val price: Double,
+    val litres: Double,
+    val milage: Double,
+    val carId: String,
+    val expenseDate: Date,
+    val averageCost: Double,
+    val averageConsumption: Double
+)
