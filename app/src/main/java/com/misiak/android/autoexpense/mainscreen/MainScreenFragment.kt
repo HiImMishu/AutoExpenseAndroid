@@ -43,7 +43,7 @@ class MainScreenFragment() : Fragment() {
         binding.viewModel = mainScreenViewModel
         binding.lifecycleOwner = this
 
-        mainScreenViewModel.cars.observe(viewLifecycleOwner, Observer {
+        mainScreenViewModel.carsWithLastFuelExpence.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
             }

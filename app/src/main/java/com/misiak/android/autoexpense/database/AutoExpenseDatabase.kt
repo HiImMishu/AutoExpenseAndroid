@@ -8,8 +8,14 @@ import com.misiak.android.autoexpense.database.entity.Car
 import com.misiak.android.autoexpense.database.entity.Engine
 import com.misiak.android.autoexpense.database.entity.FuelExpense
 import com.misiak.android.autoexpense.database.entity.User
+import com.misiak.android.autoexpense.database.view.CarWithLastFuelExpenseView
 
-@Database(entities = [User::class, Car::class, FuelExpense::class, Engine::class], version = 1, exportSchema = false)
+@Database(
+    entities = [User::class, Car::class, FuelExpense::class, Engine::class],
+    views = [CarWithLastFuelExpenseView::class],
+    version = 2,
+    exportSchema = false
+)
 @TypeConverters(Converters::class)
 abstract class AutoExpenseDatabase : RoomDatabase() {
     abstract val userDao: UserDao

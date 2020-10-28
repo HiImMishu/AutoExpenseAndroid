@@ -4,14 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.misiak.android.autoexpense.database.entity.Car
+import com.misiak.android.autoexpense.database.view.CarWithLastFuelExpenseView
 import com.misiak.android.autoexpense.network.ApiResult
 import com.misiak.android.autoexpense.repository.CarRepository
 import kotlinx.coroutines.launch
 
 class MainScreenViewModel(private val repository: CarRepository) : ViewModel() {
 
-    val cars: LiveData<List<Car>> = repository.getCars()
+    val carsWithLastFuelExpence: LiveData<List<CarWithLastFuelExpenseView>> = repository.getCarsWithRecentFuelExpense()
 
     private val _connectionError = MutableLiveData<Boolean>(false)
     val connectionError: LiveData<Boolean>

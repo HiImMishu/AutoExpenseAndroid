@@ -6,11 +6,11 @@ import java.util.*
 
 @Entity
 data class FuelExpense(
-    @PrimaryKey val id: Long,
+    @PrimaryKey val fuelExpenseId: Long,
     val price: Double,
     val litres: Double,
     val milage: Double,
-    val carId: String,
+    val carId: Long,
     val expenseDate: Date,
     val averageCost: Double,
     val averageConsumption: Double

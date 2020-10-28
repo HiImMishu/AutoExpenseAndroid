@@ -5,11 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.misiak.android.autoexpense.R
-import com.misiak.android.autoexpense.database.entity.Car
+import com.misiak.android.autoexpense.database.view.CarWithLastFuelExpenseView
 import com.misiak.android.autoexpense.databinding.ListItemCarBinding
 
-class CarAdapter: ListAdapter<Car, CarAdapter.ViewHolder>(CarDiffCallback()) {
+class CarAdapter: ListAdapter<CarWithLastFuelExpenseView, CarAdapter.ViewHolder>(CarDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarAdapter.ViewHolder {
         return ViewHolder.from(parent)
@@ -20,9 +19,9 @@ class CarAdapter: ListAdapter<Car, CarAdapter.ViewHolder>(CarDiffCallback()) {
         holder.bind(car)
     }
 
-    class ViewHolder private constructor(val binding: ListItemCarBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Car) {
-            binding.car = item
+    class ViewHolder private constructor(private val binding: ListItemCarBinding): RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: CarWithLastFuelExpenseView) {
+            binding.carWithFuelExpense = item
             binding.executePendingBindings()
         }
 
@@ -36,13 +35,13 @@ class CarAdapter: ListAdapter<Car, CarAdapter.ViewHolder>(CarDiffCallback()) {
     }
 }
 
-class CarDiffCallback: DiffUtil.ItemCallback<Car>() {
+class CarDiffCallback: DiffUtil.ItemCallback<CarWithLastFuelExpenseView>() {
 
-    override fun areItemsTheSame(oldItem: Car, newItem: Car): Boolean {
-        return oldItem.id == newItem.id
+    override fun areItemsTheSame(oldItem: CarWithLastFuelExpenseView, newItem: CarWithLastFuelExpenseView): Boolean {
+        return oldItem.car.id == newItem.car.id
     }
 
-    override fun areContentsTheSame(oldItem: Car, newItem: Car): Boolean {
+    override fun areContentsTheSame(oldItem: CarWithLastFuelExpenseView, newItem: CarWithLastFuelExpenseView): Boolean {
         return oldItem == newItem
     }
 }

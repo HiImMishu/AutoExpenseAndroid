@@ -1,11 +1,6 @@
 package com.misiak.android.autoexpense.network.dto
 
-import com.misiak.android.autoexpense.database.entity.Car
-import com.misiak.android.autoexpense.network.dto.NetworkUser
 import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
-data class NetworkCarContainer(val networkCars: List<NetworkCar>)
 
 @JsonClass(generateAdapter = true)
 data class NetworkCar(

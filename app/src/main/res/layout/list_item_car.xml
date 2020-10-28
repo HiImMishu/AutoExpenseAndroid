@@ -4,8 +4,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable
-            name="car"
-            type="com.misiak.android.autoexpense.database.entity.Car" />
+            name="carWithFuelExpense"
+            type="com.misiak.android.autoexpense.database.view.CarWithLastFuelExpenseView" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="@{car.make}"
+                android:text="@{carWithFuelExpense.car.make}"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/cardView"
@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="@{car.model}"
+                android:text="@{carWithFuelExpense.car.model}"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/make_text"
@@ -71,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@{String.valueOf(car.productionYear)}"
+                android:text="@{String.valueOf(carWithFuelExpense.car.productionYear)}"
                 app:layout_constraintStart_toEndOf="@+id/production_year_label"
                 app:layout_constraintTop_toTopOf="@+id/production_year_label"
                 tools:text="2016" />
@@ -112,7 +112,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="12.43"
+                android:text="@{carWithFuelExpense.fuelExpense != null ? String.valueOf(carWithFuelExpense.fuelExpense.averageConsumption) : String.valueOf(0.00)}"
                 app:layout_constraintStart_toEndOf="@+id/imageView5"
                 app:layout_constraintTop_toTopOf="@+id/imageView5"
                 tools:text="4.72" />
