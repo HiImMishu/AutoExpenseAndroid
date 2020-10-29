@@ -4,4 +4,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sign_in_text">Your car expenses under one click</string>
     <string name="production_year_text">Production year:</string>
+    <string name="mileage_label">Start mileage:</string>
+    <string name="km_label">km</string>
+    <string name="purchase_price_label">Purchase price:</string>
 </resources>

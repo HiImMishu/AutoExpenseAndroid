@@ -37,7 +37,7 @@ class MainScreenFragment() : Fragment() {
         val mainScreeViewModelFactory = MainScreeViewModelFactory(repository)
         mainScreenViewModel =
             ViewModelProvider(this, mainScreeViewModelFactory).get(MainScreenViewModel::class.java)
-        val adapter = CarAdapter()
+        val adapter = CarAdapter(CarClickListener { carId -> mainScreenViewModel.onCarClicked(carId) })
 
         binding.carList.adapter = adapter
         binding.viewModel = mainScreenViewModel

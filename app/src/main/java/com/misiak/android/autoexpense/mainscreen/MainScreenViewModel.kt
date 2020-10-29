@@ -25,6 +25,10 @@ class MainScreenViewModel(private val repository: CarRepository) : ViewModel() {
     val tokenExpired: LiveData<Boolean>
         get() = _tokenExpired
 
+    private val _navigateToCarDetails = MutableLiveData<Long>()
+    val navigateToCarDetails: LiveData<Long>
+        get() = _navigateToCarDetails
+
     init {
         refreshData()
     }
@@ -50,5 +54,9 @@ class MainScreenViewModel(private val repository: CarRepository) : ViewModel() {
     fun tokenExpiredHandled() {
         _tokenExpired.value = false
         refreshData()
+    }
+
+    fun onCarClicked(id: Long) {
+        println("Id of clicked car: $id")
     }
 }
