@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="engine"
+            type="com.misiak.android.autoexpense.database.entity.Engine" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorButtonNormal">
+
+        <TextView
+            android:id="@+id/capacity_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/capacity"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/horsepower_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/horsepower"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/capacity_label" />
+
+        <TextView
+            android:id="@+id/cylinders_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/cylinders"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/horsepower_label" />
+
+        <TextView
+            android:id="@+id/capacity_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="8dp"
+            android:text="@{String.valueOf(engine.capacity)}"
+            app:layout_constraintStart_toEndOf="@+id/capacity_label"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="2488" />
+
+        <TextView
+            android:id="@+id/ccm_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/ccm"
+            app:layout_constraintStart_toEndOf="@+id/capacity_text"
+            app:layout_constraintTop_toTopOf="@+id/capacity_text" />
+
+        <TextView
+            android:id="@+id/horsepower_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{String.valueOf(engine.horsepower)}"
+            app:layout_constraintStart_toStartOf="@+id/capacity_text"
+            app:layout_constraintTop_toBottomOf="@+id/capacity_text"
+            tools:text="211" />
+
+        <TextView
+            android:id="@+id/km_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/km"
+            app:layout_constraintStart_toEndOf="@+id/horsepower_text"
+            app:layout_constraintTop_toTopOf="@+id/horsepower_text" />
+
+        <TextView
+            android:id="@+id/cylinders_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{String.valueOf(engine.cylinders)}"
+            app:layout_constraintStart_toStartOf="@+id/horsepower_text"
+            app:layout_constraintTop_toBottomOf="@+id/horsepower_text"
+            tools:text="4" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

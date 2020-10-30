@@ -23,5 +23,20 @@
         <argument
             android:name="account"
             app:argType="com.google.android.gms.auth.api.signin.GoogleSignInAccount" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_carInformationFragment"
+            app:destination="@id/carInformationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/carInformationFragment"
+        android:name="com.misiak.android.autoexpense.carinformation.CarInformationFragment"
+        android:label="fragment_car_information"
+        tools:layout="@layout/fragment_car_information" >
+        <argument
+            android:name="carId"
+            app:argType="long" />
+        <argument
+            android:name="account"
+            app:argType="com.google.android.gms.auth.api.signin.GoogleSignInAccount" />
     </fragment>
 </navigation>

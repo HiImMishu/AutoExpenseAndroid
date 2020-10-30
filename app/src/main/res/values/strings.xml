@@ -7,4 +7,10 @@
     <string name="mileage_label">Start mileage:</string>
     <string name="km_label">km</string>
     <string name="purchase_price_label">Purchase price:</string>
+    <string name="capacity">Capacity:</string>
+    <string name="horsepower">Horsepower:</string>
+    <string name="ccm">ccm</string>
+    <string name="km">KM</string>
+    <string name="cylinders">Cylinders:</string>
+    <string name="engine_information">Engine Information</string>
 </resources>

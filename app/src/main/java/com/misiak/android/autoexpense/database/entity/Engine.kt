@@ -8,5 +8,6 @@ data class Engine(
     @PrimaryKey val id: Long,
     val capacity: Double,
     val horsepower: Double,
-    val cylinders: Int
+    val cylinders: Int,
+    val carId: Long
 )

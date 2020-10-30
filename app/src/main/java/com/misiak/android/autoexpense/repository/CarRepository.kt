@@ -5,12 +5,12 @@ import androidx.lifecycle.LiveData
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.misiak.android.autoexpense.database.AutoExpenseDatabase
 import com.misiak.android.autoexpense.database.entity.Car
+import com.misiak.android.autoexpense.database.entity.Engine
 import com.misiak.android.autoexpense.database.entity.FuelExpense
 import com.misiak.android.autoexpense.database.view.CarWithLastFuelExpenseView
 import com.misiak.android.autoexpense.network.ApiResult
 import com.misiak.android.autoexpense.network.Network
 import com.misiak.android.autoexpense.network.dto.NetworkCar
-import com.misiak.android.autoexpense.network.dto.NetworkFuelExpense
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -38,8 +38,16 @@ class CarRepository(private val database: AutoExpenseDatabase,var account: Googl
         return database.carDao.getCarsWithRecentFuelExpense(account.id!!)
     }
 
+    fun getCarById(carId: Long): LiveData<Car> {
+        return database.carDao.getCarById(carId)
+    }
+
     fun getFuelExpenses(): LiveData<List<FuelExpense>> {
         return database.carDao.getFuelExpenses()
+    }
+
+    fun getEngineByCarId(carId: Long): LiveData<Engine> {
+        return database.carDao.getEngineByCarId(carId)
     }
 
     private suspend fun saveToDatabase(cars: List<NetworkCar>?) {
@@ -47,6 +55,7 @@ class CarRepository(private val database: AutoExpenseDatabase,var account: Googl
             cars?.let {
                 database.carDao.saveCars(*carsAsDatabaseModel(cars))
                 database.carDao.saveFuelExpenses(*fuelExpensesAsDatabaseModel(cars))
+                database.carDao.saveEngines(*enginesAsDatabaseModel(cars))
             }
         }
     }
@@ -86,4 +95,21 @@ class CarRepository(private val database: AutoExpenseDatabase,var account: Googl
         return fuelExpenseList.toTypedArray()
     }
 
+    private fun enginesAsDatabaseModel(cars: List<NetworkCar>): Array<Engine> {
+        val engines: MutableList<Engine> = mutableListOf()
+        cars.map { networkCar ->
+            networkCar.engine?.let {
+                engines.add(
+                    Engine(
+                        id = it.id,
+                        capacity = it.capacity,
+                        horsepower = it.horsepower,
+                        cylinders = it.cylinders,
+                        carId = networkCar.id
+                    )
+                )
+            }
+        }
+        return engines.toTypedArray()
+    }
 }
