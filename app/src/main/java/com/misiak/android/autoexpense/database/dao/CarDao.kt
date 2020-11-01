@@ -21,8 +21,8 @@ interface CarDao {
     @Query("select * from Car c where c.id = :carId")
     fun getCarById(carId: Long): LiveData<Car>
 
-    @Query("select * from FuelExpense")
-    fun getFuelExpenses(): LiveData<List<FuelExpense>>
+    @Query("select * from FuelExpense fe where fe.carId = :carId")
+    fun getFuelExpensesByCarId(carId: Long): LiveData<List<FuelExpense>>
 
     @Query("select * from Engine e where e.carId = :carId")
     fun getEngineByCarId(carId: Long): LiveData<Engine>

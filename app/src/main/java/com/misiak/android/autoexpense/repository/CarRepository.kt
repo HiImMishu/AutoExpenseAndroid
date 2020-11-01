@@ -42,8 +42,8 @@ class CarRepository(private val database: AutoExpenseDatabase,var account: Googl
         return database.carDao.getCarById(carId)
     }
 
-    fun getFuelExpenses(): LiveData<List<FuelExpense>> {
-        return database.carDao.getFuelExpenses()
+    fun getFuelExpensesByCarId(carId: Long): LiveData<List<FuelExpense>> {
+        return database.carDao.getFuelExpensesByCarId(carId)
     }
 
     fun getEngineByCarId(carId: Long): LiveData<Engine> {

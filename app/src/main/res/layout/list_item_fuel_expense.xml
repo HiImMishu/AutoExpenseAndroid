@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="fuelExpense"
+            type="com.misiak.android.autoexpense.database.entity.FuelExpense" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@android:color/background_light">
+
+        <TextView
+            android:id="@+id/l_100_km_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/l_100_km_label"
+            app:layout_constraintStart_toEndOf="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="@+id/avg_consumption_text" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/avg_consumption_text"
+            app:layout_constraintStart_toEndOf="@+id/avg_consumption_text"
+            app:layout_constraintTop_toTopOf="@+id/avg_consumption_text"
+            app:srcCompat="@drawable/gas" />
+
+        <TextView
+            android:id="@+id/avg_consumption_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@{String.valueOf(fuelExpense.averageConsumption)}"
+            app:layout_constraintBottom_toBottomOf="@+id/divider2"
+            app:layout_constraintStart_toStartOf="@+id/avc_cost_text"
+            app:layout_constraintTop_toBottomOf="@+id/avc_cost_text"
+            tools:text="14.72" />
+
+        <ImageView
+            android:id="@+id/coin_image"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/avc_cost_text"
+            app:layout_constraintStart_toEndOf="@+id/avc_cost_text"
+            app:layout_constraintTop_toTopOf="@+id/avc_cost_text"
+            app:srcCompat="@drawable/money" />
+
+        <TextView
+            android:id="@+id/price_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/price_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/date_text" />
+
+        <TextView
+            android:id="@+id/price_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="70dp"
+            android:text="@{String.valueOf(fuelExpense.price)}"
+            app:layout_constraintStart_toEndOf="@+id/price_label"
+            app:layout_constraintTop_toTopOf="@+id/price_label"
+            tools:text="4.35" />
+
+        <TextView
+            android:id="@+id/litres_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/litres_label"
+            app:layout_constraintStart_toStartOf="@+id/price_label"
+            app:layout_constraintTop_toBottomOf="@+id/price_label" />
+
+        <TextView
+            android:id="@+id/litres_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@{String.valueOf(fuelExpense.litres)}"
+            app:layout_constraintStart_toStartOf="@+id/price_text"
+            app:layout_constraintTop_toBottomOf="@+id/price_text"
+            tools:text="64.53" />
+
+        <TextView
+            android:id="@+id/mileage_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:text="Car Mileage: "
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/litres_label"
+            app:layout_constraintTop_toBottomOf="@+id/litres_label" />
+
+        <TextView
+            android:id="@+id/mileage_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@{String.valueOf(fuelExpense.milage)}"
+            app:layout_constraintStart_toStartOf="@+id/litres_text"
+            app:layout_constraintTop_toBottomOf="@+id/litres_text"
+            tools:text="168439.4" />
+
+        <TextView
+            android:id="@+id/litre_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:text="@string/litre_l_label"
+            app:layout_constraintBaseline_toBaselineOf="@+id/litres_text"
+            app:layout_constraintStart_toEndOf="@+id/litres_text" />
+
+        <TextView
+            android:id="@+id/km_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:text="@string/km_label"
+            app:layout_constraintBaseline_toBaselineOf="@+id/mileage_text"
+            app:layout_constraintStart_toEndOf="@+id/mileage_text" />
+
+        <TextView
+            android:id="@+id/date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="10sp"
+            android:text="@{String.valueOf(fuelExpense.expenseDate)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="13.10.2020  14:32:56" />
+
+        <TextView
+            android:id="@+id/avc_cost_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:text="@{String.valueOf(fuelExpense.averageCost)}"
+            app:layout_constraintBottom_toTopOf="@+id/avg_consumption_text"
+            app:layout_constraintStart_toEndOf="@+id/divider2"
+            app:layout_constraintTop_toTopOf="@+id/divider2"
+            tools:text="24.23" />
+
+        <TextView
+            android:id="@+id/cost_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/per_100km_label"
+            app:layout_constraintStart_toEndOf="@+id/coin_image"
+            app:layout_constraintTop_toTopOf="@+id/avc_cost_text" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="1dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="30dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toBottomOf="@+id/mileage_text"
+            app:layout_constraintStart_toEndOf="@+id/km_label"
+            app:layout_constraintTop_toTopOf="@+id/price_text" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

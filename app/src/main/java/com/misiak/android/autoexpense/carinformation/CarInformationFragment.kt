@@ -29,11 +29,13 @@ class CarInformationFragment : Fragment() {
         val account = arguments?.let { CarInformationFragmentArgs.fromBundle(it).account }
         val database = getDatabase(requireContext().applicationContext)
         val repository = CarRepository(database, account!!)
+        val adapter = FuelExpenseAdapter()
         val viewModelFactory = CarInformationViewModelFactory(carId!!, repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(CarInformationViewModel::class.java)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+        binding.fuelExpenseRecycler.adapter = adapter
 
         viewModel.car.observe(viewLifecycleOwner, Observer { car ->
             car?.let {
@@ -41,6 +43,12 @@ class CarInformationFragment : Fragment() {
                     binding.expandableEngineInfo.setAdapter(EngineInformationAdapter(null))
                 else
                     setEngineObserver()
+            }
+        })
+
+        viewModel.fuelExpenses.observe(viewLifecycleOwner, Observer { fuelExpenses ->
+            fuelExpenses?.let {
+                adapter.submitList(it)
             }
         })
 
