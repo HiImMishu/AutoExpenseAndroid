@@ -2,6 +2,7 @@ package com.misiak.android.autoexpense.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.room.Transaction
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.misiak.android.autoexpense.database.AutoExpenseDatabase
 import com.misiak.android.autoexpense.database.entity.Car
@@ -27,6 +28,31 @@ class CarRepository(private val database: AutoExpenseDatabase,var account: Googl
         } catch (e: Exception) {
             Log.e(CarRepository::refreshCars.toString(), "Error occurred: ${e.message}")
             ApiResult.NetworkError(e)
+        }
+    }
+
+    suspend fun deleteCar(carId: Long) : ApiResult {
+        return try {
+            val deleteResponse = Network.cars.deleteCar("Bearer ${account.idToken!!}", carId).await()
+            val result = ApiResult.apiResultFromCode(deleteResponse.code())
+            if (result is ApiResult.Success<*>) {
+                deleteFromDatabase(carId)
+            }
+            println(deleteResponse.code())
+            result
+        } catch (e: Exception) {
+            Log.e(CarRepository::refreshCars.toString(), "Error occurred: ${e.message}")
+            ApiResult.NetworkError(e)
+        }
+    }
+
+    @Transaction
+    private suspend fun deleteFromDatabase(carId: Long) {
+        withContext(Dispatchers.IO) {
+            database.carDao.deleteCarById(carId)
+            database.carDao.deleteFuelExpensesByCarId(carId)
+            database.carDao.deleteEngineByCarId(carId)
+            println("Deleted!")
         }
     }
 

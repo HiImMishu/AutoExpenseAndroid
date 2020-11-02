@@ -56,7 +56,13 @@ class MainScreenViewModel(private val repository: CarRepository) : ViewModel() {
         refreshData()
     }
 
-    fun onCarClicked(id: Long) {
-        println("Id of clicked car: $id")
+    fun deleteCar(carId: Long) {
+        viewModelScope.launch {
+            when (repository.deleteCar(carId)) {
+                is ApiResult.NetworkError -> _connectionError.value = true
+                is ApiResult.ServerError -> _serverError.value = true
+                is ApiResult.AuthenticationError -> _tokenExpired.value = true
+            }
+        }
     }
 }

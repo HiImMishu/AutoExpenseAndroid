@@ -1,23 +1,21 @@
 package com.misiak.android.autoexpense.mainscreen
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
 import com.misiak.android.autoexpense.R
 import com.misiak.android.autoexpense.authentication.SignInFragment
-import com.misiak.android.autoexpense.authentication.SignInFragmentDirections
 import com.misiak.android.autoexpense.database.getDatabase
 import com.misiak.android.autoexpense.databinding.FragmentMainScreenBinding
 import com.misiak.android.autoexpense.repository.CarRepository
@@ -26,6 +24,7 @@ import com.misiak.android.autoexpense.repository.CarRepository
 class MainScreenFragment() : Fragment() {
 
     private lateinit var mainScreenViewModel: MainScreenViewModel
+    private lateinit var repository: CarRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,13 +34,14 @@ class MainScreenFragment() : Fragment() {
             DataBindingUtil.inflate(inflater, R.layout.fragment_main_screen, container, false)
         val account = arguments?.let { MainScreenFragmentArgs.fromBundle(it).account }
         val database = getDatabase(requireContext().applicationContext)
-        val repository = CarRepository(database, account!!)
+        repository = CarRepository(database, account!!)
         val mainScreeViewModelFactory = MainScreeViewModelFactory(repository)
         mainScreenViewModel =
             ViewModelProvider(this, mainScreeViewModelFactory).get(MainScreenViewModel::class.java)
-        val adapter = CarAdapter(CarClickListener { carId ->
-            findNavController().navigate(MainScreenFragmentDirections.actionMainScreenFragmentToCarInformationFragment(carId, account))
-        })
+        val adapter = CarAdapter(carActionListener(account))
+        val carItemTouchHelperCallback = CarItemTouchHelper()
+        val itemTouchHelper =ItemTouchHelper(carItemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(binding.carList)
 
         binding.carList.adapter = adapter
         binding.viewModel = mainScreenViewModel
@@ -78,7 +78,32 @@ class MainScreenFragment() : Fragment() {
         return binding.root
     }
 
+    private fun carActionListener(account: GoogleSignInAccount): CarClickListener {
+        return CarClickListener { carId, actionType ->
+            when(actionType) {
+                ItemTouchHelper.ACTION_STATE_IDLE -> navigateToCarInfo(carId, account)
+                ItemTouchHelper.LEFT -> mainScreenViewModel.deleteCar(carId)
+                ItemTouchHelper.RIGHT -> editCar(carId)
+            }
 
+        }
+    }
+
+    private fun editCar(carId: Long) {
+
+    }
+
+    private fun navigateToCarInfo(
+        carId: Long,
+        account: GoogleSignInAccount
+    ) {
+        findNavController().navigate(
+            MainScreenFragmentDirections.actionMainScreenFragmentToCarInformationFragment(
+                carId,
+                account
+            )
+        )
+    }
 
     private fun getAccount(): GoogleSignInAccount? {
         val googleSignInClient = SignInFragment.getGoogleSignInClient(requireContext())
