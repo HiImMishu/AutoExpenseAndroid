@@ -19,7 +19,7 @@ class CarRepository(private val database: AutoExpenseDatabase,var account: Googl
 
     suspend fun refreshCars(): ApiResult {
         return try {
-            val carsResponse = Network.cars.getCars("Bearer ${account.idToken!!}").await()
+            val carsResponse = Network.cars.getCarsAsync("Bearer ${account.idToken!!}").await()
             val result = ApiResult.apiResultFromCode(carsResponse.code())
             if (result is ApiResult.Success<*>) {
                 saveToDatabase(carsResponse.body())
@@ -33,16 +33,59 @@ class CarRepository(private val database: AutoExpenseDatabase,var account: Googl
 
     suspend fun deleteCar(carId: Long) : ApiResult {
         return try {
-            val deleteResponse = Network.cars.deleteCar("Bearer ${account.idToken!!}", carId).await()
+            val deleteResponse = Network.cars.deleteCarAsync("Bearer ${account.idToken!!}", carId).await()
             val result = ApiResult.apiResultFromCode(deleteResponse.code())
             if (result is ApiResult.Success<*>) {
                 deleteFromDatabase(carId)
             }
-            println(deleteResponse.code())
             result
         } catch (e: Exception) {
             Log.e(CarRepository::refreshCars.toString(), "Error occurred: ${e.message}")
             ApiResult.NetworkError(e)
+        }
+    }
+
+    suspend fun updateCar(car: Car) : ApiResult {
+        return try {
+            val getCarResponse = Network.cars.getCarAsync("Bearer ${account.idToken!!}", car.id).await()
+            var result = ApiResult.apiResultFromCode(getCarResponse.code())
+            if (result is ApiResult.Success<*>) {
+                val updatedNetworkCar = updateCarInfo(getCarResponse.body()!!, car)
+                val response: ApiResult = saveUpdatedCarToServer(updatedNetworkCar)
+                if (response is ApiResult.Success<*>)
+                    updateCarInDatabase(car)
+                result = response
+            }
+            result
+        } catch (e: Exception) {
+            Log.e(CarRepository::refreshCars.toString(), "Error occurred: ${e.message}")
+            ApiResult.NetworkError(e)
+        }
+    }
+
+    private suspend fun saveUpdatedCarToServer(networkCar: NetworkCar): ApiResult {
+        return try {
+            val updateCarResponse = Network.cars.updateCarAsync("Bearer ${account.idToken!!}", networkCar).await()
+            ApiResult.apiResultFromCode(updateCarResponse.code())
+        } catch (e: Exception) {
+            Log.e(CarRepository::refreshCars.toString(), "Error occurred: ${e.message}")
+            ApiResult.NetworkError(e)
+        }
+    }
+
+    private fun updateCarInfo(networkCar: NetworkCar, car: Car): NetworkCar {
+        networkCar.make = car.make
+        networkCar.model = car.model
+        networkCar.productionYear = car.productionYear
+        networkCar.mileage = car.mileage
+        networkCar.basePrice = car.basePrice
+
+        return networkCar
+    }
+
+    private suspend fun updateCarInDatabase(car: Car) {
+        withContext(Dispatchers.IO) {
+            database.carDao.saveCars(car)
         }
     }
 
@@ -69,11 +112,11 @@ class CarRepository(private val database: AutoExpenseDatabase,var account: Googl
     }
 
     fun getFuelExpensesByCarId(carId: Long): LiveData<List<FuelExpense>> {
-        return database.carDao.getFuelExpensesByCarId(carId)
+        return database.carDao.getFuelExpensesByCarIdAsync(carId)
     }
 
     fun getEngineByCarId(carId: Long): LiveData<Engine> {
-        return database.carDao.getEngineByCarId(carId)
+        return database.carDao.getEngineByCarIdAsync(carId)
     }
 
     private suspend fun saveToDatabase(cars: List<NetworkCar>?) {
@@ -138,4 +181,5 @@ class CarRepository(private val database: AutoExpenseDatabase,var account: Googl
         }
         return engines.toTypedArray()
     }
+
 }

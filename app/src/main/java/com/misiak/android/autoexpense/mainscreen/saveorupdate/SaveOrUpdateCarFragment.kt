@@ -10,6 +10,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.material.snackbar.Snackbar
 import com.misiak.android.autoexpense.R
 import com.misiak.android.autoexpense.database.entity.Car
 import com.misiak.android.autoexpense.database.getDatabase
@@ -21,6 +23,7 @@ class SaveOrUpdateCarFragment : Fragment() {
 
     private lateinit var binding: FragmentSaveOrUpdateCarBinding
     private lateinit var viewModel: SaveOrUpdateViewModel
+    private lateinit var account: GoogleSignInAccount
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,7 +35,7 @@ class SaveOrUpdateCarFragment : Fragment() {
             container,
             false
         )
-        val account = arguments?.let { SaveOrUpdateCarFragmentArgs.fromBundle(it).account }
+        account = SaveOrUpdateCarFragmentArgs.fromBundle(requireArguments()).account
         val carId = arguments?.let { SaveOrUpdateCarFragmentArgs.fromBundle(it).carId }
         val action = arguments?.let { SaveOrUpdateCarFragmentArgs.fromBundle(it).action }
         val database = getDatabase(requireContext())
@@ -46,9 +49,28 @@ class SaveOrUpdateCarFragment : Fragment() {
         binding.editCarCard.saveButton.setOnClickListener {
             if (isDataValid()) {
                 hideKeyboard()
-
+                val car = extractCar()
+                if (action == Action.UPDATE)
+                    viewModel.updateCar(car)
             }
         }
+
+        viewModel.connectionError.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                Snackbar.make(
+                    requireView(),
+                    "Check your internet connection.",
+                    Snackbar.LENGTH_LONG
+                ).show()
+                viewModel.connectionErrorHandled()
+            }
+        })
+
+        viewModel.updateSuccess.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                parentFragmentManager.popBackStack()
+            }
+        })
 
         binding.editCarCard.setOnClickListener {
             hideKeyboard()
@@ -57,8 +79,22 @@ class SaveOrUpdateCarFragment : Fragment() {
         return binding.root
     }
 
+    private fun extractCar(): Car {
+        return Car(
+            id = viewModel.carToSave?.value?.id ?: 0,
+            make = binding.makeText.text.toString(),
+            model = binding.modelText.text.toString(),
+            productionYear = binding.productionYearText.text.toString().toInt(),
+            mileage = binding.mileageText.text.toString().toDouble(),
+            basePrice = binding.purchasePriceText.text.toString().toDouble(),
+            userId = account.id,
+            engineId = viewModel.carToSave?.value?.engineId
+        )
+    }
+
     private fun isDataValid(): Boolean {
         return true
+        //TODO("Validate fields")
     }
 
     private fun fillCarValuesToEditScreen(car: Car) {

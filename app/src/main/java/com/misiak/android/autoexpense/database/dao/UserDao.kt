@@ -10,7 +10,10 @@ import com.misiak.android.autoexpense.database.entity.User
 @Dao
 interface UserDao {
     @Query("select * from user u where u.userId = :id")
-    fun getUser(id: String): LiveData<User>
+    fun getUserAsync(id: String): LiveData<User>
+
+    @Query("select * from user u where u.userId = :id")
+    fun getUser(id: String): User
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUser(user: User)

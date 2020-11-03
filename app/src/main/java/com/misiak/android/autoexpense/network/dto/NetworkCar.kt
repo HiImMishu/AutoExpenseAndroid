@@ -5,11 +5,11 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class NetworkCar(
     val id: Long,
-    val make: String,
-    val model: String,
-    val productionYear: Int,
-    val mileage: Double,
-    val basePrice: Double?,
+    var make: String,
+    var model: String,
+    var productionYear: Int,
+    var mileage: Double,
+    var basePrice: Double?,
     val engine: NetworkEngine?,
     val user: NetworkUser?,
     val fuelExpenses: List<NetworkFuelExpense>?

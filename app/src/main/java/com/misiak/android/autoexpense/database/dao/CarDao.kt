@@ -22,10 +22,16 @@ interface CarDao {
     fun getCarById(carId: Long): LiveData<Car>
 
     @Query("select * from FuelExpense fe where fe.carId = :carId")
-    fun getFuelExpensesByCarId(carId: Long): LiveData<List<FuelExpense>>
+    fun getFuelExpensesByCarIdAsync(carId: Long): LiveData<List<FuelExpense>>
+
+    @Query("select * from FuelExpense fe where fe.carId = :carId")
+    fun getFuelExpensesByCarId(carId: Long): List<FuelExpense>
 
     @Query("select * from Engine e where e.carId = :carId")
-    fun getEngineByCarId(carId: Long): LiveData<Engine>
+    fun getEngineByCarIdAsync(carId: Long): LiveData<Engine>
+
+    @Query("select * from Engine e where e.carId = :carId")
+    fun getEngineByCarId(carId: Long): Engine
 
     @Query("delete from Car where Car.id = :carId")
     fun deleteCarById(carId: Long)
