@@ -18,4 +18,11 @@
     <string name="litres_label">Litres:</string>
     <string name="litre_l_label">l</string>
     <string name="per_100km_label">/ 100km</string>
+    <string name="edit_car">Edit Car</string>
+    <string name="save">Save</string>
+    <string name="make">Make:</string>
+    <string name="car_make_hint">Car make</string>
+    <string name="model">Model:</string>
+    <string name="add_new_car">Add new car</string>
+    <string name="car_model">Car model</string>
 </resources>

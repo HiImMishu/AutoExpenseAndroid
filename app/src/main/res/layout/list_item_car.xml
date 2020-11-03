@@ -29,7 +29,7 @@
             android:layout_height="wrap_content">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardView"
+                android:id="@+id/carMiniatureCard"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginStart="16dp"
@@ -55,9 +55,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:text="@{carWithFuelExpense.car.make}"
-                app:layout_constraintStart_toEndOf="@+id/cardView"
-                app:layout_constraintTop_toTopOf="@+id/cardView"
+                app:layout_constraintStart_toEndOf="@+id/carMiniatureCard"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="Audi" />
 
             <TextView
@@ -85,10 +86,9 @@
                 android:id="@+id/production_year_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/production_year_text"
-                app:layout_constraintStart_toEndOf="@+id/cardView"
+                app:layout_constraintStart_toStartOf="@+id/make_text"
                 app:layout_constraintTop_toBottomOf="@+id/make_text" />
 
             <ImageView
@@ -106,9 +106,8 @@
                 android:id="@+id/imageView5"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintStart_toEndOf="@+id/cardView"
+                app:layout_constraintStart_toStartOf="@+id/production_year_label"
                 app:layout_constraintTop_toBottomOf="@+id/production_year_label"
                 app:srcCompat="@drawable/gas" />
 
@@ -126,6 +125,7 @@
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
                 android:text="l / 100 km"
                 app:layout_constraintStart_toEndOf="@+id/fuel_100km_text"
                 app:layout_constraintTop_toTopOf="@+id/fuel_100km_text" />

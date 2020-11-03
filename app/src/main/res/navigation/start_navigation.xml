@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_mainScreenFragment_to_carInformationFragment"
             app:destination="@id/carInformationFragment" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_saveOrUpdateCarFragment"
+            app:destination="@id/saveOrUpdateCarFragment" />
     </fragment>
     <fragment
         android:id="@+id/carInformationFragment"
@@ -38,5 +41,20 @@
         <argument
             android:name="account"
             app:argType="com.google.android.gms.auth.api.signin.GoogleSignInAccount" />
+    </fragment>
+    <fragment
+        android:id="@+id/saveOrUpdateCarFragment"
+        android:name="com.misiak.android.autoexpense.mainscreen.saveorupdate.SaveOrUpdateCarFragment"
+        android:label="fragment_save_or_update_car"
+        tools:layout="@layout/fragment_save_or_update_car" >
+        <argument
+            android:name="account"
+            app:argType="com.google.android.gms.auth.api.signin.GoogleSignInAccount" />
+        <argument
+            android:name="carId"
+            app:argType="long" />
+        <argument
+            android:name="action"
+            app:argType="com.misiak.android.autoexpense.mainscreen.saveorupdate.Action"/>
     </fragment>
 </navigation>

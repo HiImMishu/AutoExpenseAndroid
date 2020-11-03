@@ -2,6 +2,7 @@ package com.misiak.android.autoexpense.mainscreen
 
 import android.graphics.Canvas
 import android.graphics.Color
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -66,7 +67,7 @@ class CarClickListener(val actionListener: (carId: Long, action: Int) -> Unit) {
     fun onClick(car: Car, action: Int) = actionListener(car.id, action)
 }
 
-class CarItemTouchHelper: ItemTouchHelper.Callback() {
+class CarItemTouchHelper(): ItemTouchHelper.Callback() {
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,
@@ -92,8 +93,10 @@ class CarItemTouchHelper: ItemTouchHelper.Callback() {
             ItemTouchHelper.LEFT ->
                 binding.clickListener!!.onClick(binding.carWithFuelExpense!!.car, ItemTouchHelper.LEFT)
 
-            ItemTouchHelper.RIGHT ->
+            ItemTouchHelper.RIGHT -> {
                 binding.clickListener!!.onClick(binding.carWithFuelExpense!!.car, ItemTouchHelper.RIGHT)
+                viewHolder.itemView
+            }
         }
     }
 

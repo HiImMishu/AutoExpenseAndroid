@@ -18,36 +18,38 @@ import com.misiak.android.autoexpense.R
 import com.misiak.android.autoexpense.authentication.SignInFragment
 import com.misiak.android.autoexpense.database.getDatabase
 import com.misiak.android.autoexpense.databinding.FragmentMainScreenBinding
+import com.misiak.android.autoexpense.mainscreen.saveorupdate.Action
+import com.misiak.android.autoexpense.mainscreen.saveorupdate.SaveOrUpdateCarFragment
 import com.misiak.android.autoexpense.repository.CarRepository
 
 
 class MainScreenFragment() : Fragment() {
 
     private lateinit var mainScreenViewModel: MainScreenViewModel
-    private lateinit var repository: CarRepository
+    private lateinit var binding: FragmentMainScreenBinding
+    private lateinit var itemTouchHelper: ItemTouchHelper
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding: FragmentMainScreenBinding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_main_screen, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main_screen, container, false)
         val account = arguments?.let { MainScreenFragmentArgs.fromBundle(it).account }
         val database = getDatabase(requireContext().applicationContext)
-        repository = CarRepository(database, account!!)
+        val repository = CarRepository(database, account!!)
         val mainScreeViewModelFactory = MainScreeViewModelFactory(repository)
         mainScreenViewModel =
             ViewModelProvider(this, mainScreeViewModelFactory).get(MainScreenViewModel::class.java)
         val adapter = CarAdapter(carActionListener(account))
         val carItemTouchHelperCallback = CarItemTouchHelper()
-        val itemTouchHelper =ItemTouchHelper(carItemTouchHelperCallback)
+        itemTouchHelper = ItemTouchHelper(carItemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(binding.carList)
 
         binding.carList.adapter = adapter
         binding.viewModel = mainScreenViewModel
         binding.lifecycleOwner = this
 
-        mainScreenViewModel.carsWithLastFuelExpence.observe(viewLifecycleOwner, Observer {
+        mainScreenViewModel.carsWithLastFuelExpense.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
             }
@@ -55,14 +57,22 @@ class MainScreenFragment() : Fragment() {
 
         mainScreenViewModel.connectionError.observe(viewLifecycleOwner, Observer {
             if (it) {
-                Snackbar.make(requireView(), "Check your internet connection.", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(
+                    requireView(),
+                    "Check your internet connection.",
+                    Snackbar.LENGTH_LONG
+                ).show()
                 mainScreenViewModel.connectionErrorHandled()
             }
         })
 
         mainScreenViewModel.serverError.observe(viewLifecycleOwner, Observer {
             if (it) {
-                Snackbar.make(requireView(), "Server Error, couldn't refresh data.", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(
+                    requireView(),
+                    "Server Error, couldn't refresh data.",
+                    Snackbar.LENGTH_LONG
+                ).show()
                 mainScreenViewModel.serverErrorHandled()
             }
         })
@@ -78,19 +88,34 @@ class MainScreenFragment() : Fragment() {
         return binding.root
     }
 
+
     private fun carActionListener(account: GoogleSignInAccount): CarClickListener {
         return CarClickListener { carId, actionType ->
-            when(actionType) {
+            when (actionType) {
                 ItemTouchHelper.ACTION_STATE_IDLE -> navigateToCarInfo(carId, account)
                 ItemTouchHelper.LEFT -> mainScreenViewModel.deleteCar(carId)
-                ItemTouchHelper.RIGHT -> editCar(carId)
+                ItemTouchHelper.RIGHT -> navigateToEditCar(
+                    carId,
+                    account,
+                    Action.UPDATE
+                )
             }
-
         }
     }
 
-    private fun editCar(carId: Long) {
 
+    private fun navigateToEditCar(
+        carId: Long,
+        account: GoogleSignInAccount,
+        action: Action
+    ) {
+        findNavController().navigate(
+            MainScreenFragmentDirections.actionMainScreenFragmentToSaveOrUpdateCarFragment(
+                account,
+                carId,
+                action
+            )
+        )
     }
 
     private fun navigateToCarInfo(
@@ -110,8 +135,7 @@ class MainScreenFragment() : Fragment() {
         val task = googleSignInClient.silentSignIn()
         if (task.isComplete) {
             return task.getResult(ApiException::class.java)!!
-        }
-        else {
+        } else {
             task.addOnCompleteListener {
                 return@addOnCompleteListener
             }
