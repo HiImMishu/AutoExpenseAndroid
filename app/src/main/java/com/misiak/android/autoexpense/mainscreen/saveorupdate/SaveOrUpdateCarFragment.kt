@@ -39,7 +39,7 @@ class SaveOrUpdateCarFragment : Fragment() {
         val carId = arguments?.let { SaveOrUpdateCarFragmentArgs.fromBundle(it).carId }
         val action = arguments?.let { SaveOrUpdateCarFragmentArgs.fromBundle(it).action }
         val database = getDatabase(requireContext())
-        val repository = CarRepository(database, account!!)
+        val repository = CarRepository(database, account)
         val viewModelFactory = SaveOrUpdateViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(SaveOrUpdateViewModel::class.java)
 
@@ -52,6 +52,8 @@ class SaveOrUpdateCarFragment : Fragment() {
                 val car = extractCar()
                 if (action == Action.UPDATE)
                     viewModel.updateCar(car)
+                else
+                    viewModel.saveCar(car)
             }
         }
 
@@ -69,6 +71,7 @@ class SaveOrUpdateCarFragment : Fragment() {
         viewModel.updateSuccess.observe(viewLifecycleOwner, Observer {
             if (it) {
                 parentFragmentManager.popBackStack()
+                viewModel.navigatedOnSuccess()
             }
         })
 

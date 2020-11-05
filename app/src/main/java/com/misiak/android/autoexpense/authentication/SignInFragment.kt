@@ -49,9 +49,9 @@ class SignInFragment : Fragment() {
         val binding: FragmentSignInBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_sign_in, container, false)
 
-        //latestSignedInUser()
+        latestSignedInUser()
 
-        val googleSignInClient = Companion.getGoogleSignInClient(requireContext())
+        val googleSignInClient = getGoogleSignInClient(requireContext())
 
         signInViewModel = ViewModelProvider(this).get(SignInViewModel::class.java)
         binding.viewModel = signInViewModel

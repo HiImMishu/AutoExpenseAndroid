@@ -110,7 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="@{String.valueOf(fuelExpense.milage)}"
+            android:text="@{String.valueOf(fuelExpense.carMileageAfterRefuel)}"
             app:layout_constraintStart_toStartOf="@+id/litres_text"
             app:layout_constraintTop_toBottomOf="@+id/litres_text"
             tools:text="168439.4" />

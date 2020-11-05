@@ -9,7 +9,7 @@ data class FuelExpense(
     @PrimaryKey val fuelExpenseId: Long,
     val price: Double,
     val litres: Double,
-    val milage: Double,
+    val carMileageAfterRefuel: Double,
     val carId: Long,
     val expenseDate: Date,
     val averageCost: Double,

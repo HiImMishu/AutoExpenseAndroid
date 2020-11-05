@@ -1,9 +1,11 @@
 package com.misiak.android.autoexpense.network
 
+import com.misiak.android.autoexpense.network.dto.NetworkCar
+import retrofit2.Response
 import kotlin.Exception
 
 sealed class ApiResult{
-    data class Success<out T: Any>(val data: T) : ApiResult()
+    data class Success<out T: Any?>(val data: T) : ApiResult()
     data class NetworkError(val exception: Exception) : ApiResult()
     object ServerError : ApiResult()
     object AuthenticationError : ApiResult()
@@ -11,13 +13,13 @@ sealed class ApiResult{
     object UnknownError: ApiResult()
 
     companion object {
-        fun apiResultFromCode(code: Int): ApiResult {
-            return when (code) {
-                200 -> ApiResult.Success(Unit)
-                500 -> ApiResult.ServerError
-                404 -> ApiResult.ResourceNotFoundError
-                401 -> ApiResult.AuthenticationError
-                else -> ApiResult.UnknownError
+        fun apiResultFromResponse(response: Response<*>): ApiResult {
+            return when (response.code()) {
+                200 -> Success(response.body())
+                500 -> ServerError
+                404 -> ResourceNotFoundError
+                401 -> AuthenticationError
+                else -> UnknownError
             }
         }
     }

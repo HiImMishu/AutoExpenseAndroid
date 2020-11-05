@@ -1,6 +1,5 @@
 package com.misiak.android.autoexpense.repository
 
-import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.misiak.android.autoexpense.database.AutoExpenseDatabase
 import com.misiak.android.autoexpense.database.entity.User
@@ -12,35 +11,24 @@ import kotlinx.coroutines.withContext
 
 class UserRepository(
     private val database: AutoExpenseDatabase,
-    private val account: GoogleSignInAccount
+    account: GoogleSignInAccount
 ) {
 
-    suspend fun refreshUser(): ApiResult {
-        return try {
-            val user = Network.users.getUser("Bearer ${account.idToken!!}").await()
-            val result = ApiResult.apiResultFromCode(user.code())
-            if (result is ApiResult.Success<*>)
-                saveToDatabase(user.body())
-            result
-        } catch (e: Exception) {
-            Log.e(UserRepository::signInUser.toString(), "Error occurred: ${e.message}")
-            ApiResult.NetworkError(e)
-        }
-    }
+    private val token = "Bearer ${account.idToken!!}"
 
     suspend fun signInUser(): ApiResult {
-        if (checkUserAlreadySignedIn() is ApiResult.Success<*>)
-            return ApiResult.Success(Unit)
+        val userAlreadySignedInResult = checkUserAlreadySignedIn()
 
-        return try {
-            val signedInUser = Network.users.signInUser("Bearer ${account.idToken!!}").await()
-            val result = ApiResult.apiResultFromCode(signedInUser.code())
-            if (result is ApiResult.Success<*>) {
-                saveToDatabase(signedInUser.body())
+        return if (isSuccess(userAlreadySignedInResult))
+            userAlreadySignedInResult
+        else try {
+            val serverResponse = Network.users.signInUserAsync(token).await()
+            val result = ApiResult.apiResultFromResponse(serverResponse)
+            if (isSuccess(result)) {
+                saveToDatabase(serverResponse.body())
             }
             result
         } catch (e: Exception) {
-            Log.e(UserRepository::signInUser.toString(), "Error occurred: ${e.message}")
             ApiResult.NetworkError(e)
         }
     }
@@ -53,13 +41,15 @@ class UserRepository(
 
     private suspend fun checkUserAlreadySignedIn(): ApiResult {
         return try {
-            val userAlreadySignedIn = Network.users.getUser("Bearer ${account.idToken!!}").await()
-            ApiResult.apiResultFromCode(userAlreadySignedIn.code())
+            val serverResponse = Network.users.getUserAsync(token).await()
+            ApiResult.apiResultFromResponse(serverResponse)
         } catch (e: Exception) {
-            Log.e(UserRepository::signInUser.toString(), "Error occurred: ${e.message}")
             ApiResult.NetworkError(e)
         }
     }
+
+    private fun isSuccess(result: ApiResult) =
+        result is ApiResult.Success<*>
 
     private fun userAsDatabaseModel(user: NetworkUser): User {
         return User(
@@ -71,3 +61,16 @@ class UserRepository(
         )
     }
 }
+
+//UNUSED
+//    suspend fun refreshUser(): ApiResult {
+//        return try {
+//            val user = Network.users.getUser(token).await()
+//            val result = ApiResult.apiResultFromCode(user.code())
+//            if (result is ApiResult.Success<*>)
+//                saveToDatabase(user.body())
+//            result
+//        } catch (e: Exception) {
+//            ApiResult.NetworkError(e)
+//        }
+//    }

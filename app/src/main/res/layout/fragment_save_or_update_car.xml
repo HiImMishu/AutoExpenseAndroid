@@ -153,8 +153,7 @@
                 android:layout_width="162dp"
                 android:layout_height="43dp"
                 android:ems="10"
-                android:inputType="number"
-                android:numeric="decimal"
+                android:inputType="number|numberDecimal"
                 app:layout_constraintBaseline_toBaselineOf="@+id/mileage_label"
                 app:layout_constraintStart_toStartOf="@+id/production_year_text" />
 
@@ -173,8 +172,7 @@
                 android:layout_width="161dp"
                 android:layout_height="43dp"
                 android:ems="10"
-                android:inputType="number"
-                android:numeric="decimal"
+                android:inputType="number|numberDecimal"
                 app:layout_constraintBaseline_toBaselineOf="@+id/purchase_price_label"
                 app:layout_constraintStart_toStartOf="@+id/mileage_text" />
 

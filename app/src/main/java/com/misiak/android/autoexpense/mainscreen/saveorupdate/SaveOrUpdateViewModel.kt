@@ -43,4 +43,15 @@ class SaveOrUpdateViewModel(val repository: CarRepository) : ViewModel() {
             }
         }
     }
+
+    fun saveCar(car: Car) {
+        viewModelScope.launch {
+            val result = repository.saveCar(car)
+            when (result) {
+                is ApiResult.NetworkError -> _connectionError.value = true
+                is ApiResult.Success<*> -> _updateSuccess.value = true
+            }
+            println(result)
+        }
+    }
 }

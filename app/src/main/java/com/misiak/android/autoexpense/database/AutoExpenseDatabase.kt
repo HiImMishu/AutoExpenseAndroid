@@ -13,7 +13,7 @@ import com.misiak.android.autoexpense.database.view.CarWithLastFuelExpenseView
 @Database(
     entities = [User::class, Car::class, FuelExpense::class, Engine::class],
     views = [CarWithLastFuelExpenseView::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

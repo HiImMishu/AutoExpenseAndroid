@@ -19,9 +19,7 @@ import com.misiak.android.autoexpense.authentication.SignInFragment
 import com.misiak.android.autoexpense.database.getDatabase
 import com.misiak.android.autoexpense.databinding.FragmentMainScreenBinding
 import com.misiak.android.autoexpense.mainscreen.saveorupdate.Action
-import com.misiak.android.autoexpense.mainscreen.saveorupdate.SaveOrUpdateCarFragment
 import com.misiak.android.autoexpense.repository.CarRepository
-
 
 class MainScreenFragment() : Fragment() {
 
@@ -42,9 +40,9 @@ class MainScreenFragment() : Fragment() {
             ViewModelProvider(this, mainScreeViewModelFactory).get(MainScreenViewModel::class.java)
         val adapter = CarAdapter(carActionListener(account))
         val carItemTouchHelperCallback = CarItemTouchHelper()
+
         itemTouchHelper = ItemTouchHelper(carItemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(binding.carList)
-
         binding.carList.adapter = adapter
         binding.viewModel = mainScreenViewModel
         binding.lifecycleOwner = this
@@ -57,22 +55,14 @@ class MainScreenFragment() : Fragment() {
 
         mainScreenViewModel.connectionError.observe(viewLifecycleOwner, Observer {
             if (it) {
-                Snackbar.make(
-                    requireView(),
-                    "Check your internet connection.",
-                    Snackbar.LENGTH_LONG
-                ).show()
+                showSnackBar("Check your internet connection.")
                 mainScreenViewModel.connectionErrorHandled()
             }
         })
 
         mainScreenViewModel.serverError.observe(viewLifecycleOwner, Observer {
             if (it) {
-                Snackbar.make(
-                    requireView(),
-                    "Server Error, couldn't refresh data.",
-                    Snackbar.LENGTH_LONG
-                ).show()
+                showSnackBar("Server Error, couldn't refresh data.")
                 mainScreenViewModel.serverErrorHandled()
             }
         })
@@ -84,10 +74,21 @@ class MainScreenFragment() : Fragment() {
             }
         })
 
+        binding.addCarCard.setOnClickListener {
+            navigateToEditCar(-1, account, Action.SAVE)
+        }
+
         (activity as AppCompatActivity).supportActionBar?.show()
         return binding.root
     }
 
+    private fun showSnackBar(message: String) {
+        Snackbar.make(
+            requireView(),
+            message,
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
 
     private fun carActionListener(account: GoogleSignInAccount): CarClickListener {
         return CarClickListener { carId, actionType ->
@@ -102,7 +103,6 @@ class MainScreenFragment() : Fragment() {
             }
         }
     }
-
 
     private fun navigateToEditCar(
         carId: Long,
@@ -136,6 +136,7 @@ class MainScreenFragment() : Fragment() {
         if (task.isComplete) {
             return task.getResult(ApiException::class.java)!!
         } else {
+            while (!task.isComplete)
             task.addOnCompleteListener {
                 return@addOnCompleteListener
             }

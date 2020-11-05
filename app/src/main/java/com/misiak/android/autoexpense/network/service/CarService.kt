@@ -12,6 +12,9 @@ interface CarService {
     @GET("/cars/{id}")
     fun getCarAsync(@Header("Authorization") token: String, @Path("id") carId: Long): Deferred<Response<NetworkCar>>
 
+    @POST("/cars")
+    fun saveCarAsync(@Header("Authorization") token: String, @Body car: NetworkCar): Deferred<Response<NetworkCar>>
+
     @PUT("/cars")
     fun updateCarAsync(@Header("Authorization") token: String, @Body car: NetworkCar): Deferred<Response<NetworkCar>>
 

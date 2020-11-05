@@ -2,7 +2,6 @@ package com.misiak.android.autoexpense.network.dto
 
 import com.misiak.android.autoexpense.database.entity.Car
 import com.squareup.moshi.JsonClass
-import java.sql.Timestamp
 import java.util.*
 
 @JsonClass(generateAdapter = true)

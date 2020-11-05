@@ -2,6 +2,7 @@ package com.misiak.android.autoexpense.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.misiak.android.autoexpense.network.dto.NetworkCar
 
 @Entity
 data class Car(
@@ -14,3 +15,17 @@ data class Car(
     var userId: String?,
     var engineId: Long?
 )
+
+fun Car.carAsNetworkCar(): NetworkCar {
+    return NetworkCar(
+        id = id,
+        make = make,
+        model = model,
+        productionYear = productionYear,
+        mileage = mileage,
+        basePrice = basePrice,
+        engine = null,
+        user = null,
+        fuelExpenses = null
+    )
+}
