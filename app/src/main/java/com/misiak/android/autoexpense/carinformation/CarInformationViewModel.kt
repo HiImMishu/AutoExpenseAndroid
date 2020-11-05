@@ -14,4 +14,7 @@ class CarInformationViewModel(carId: Long, private val repository: CarRepository
     val engine: LiveData<Engine> = repository.getEngineByCarId(carId)
     val fuelExpenses: LiveData<List<FuelExpense>> = repository.getFuelExpensesByCarId(carId)
 
+    fun deleteFuelExpense(fuelExpenseId: Long) {
+        println("Deleted: $fuelExpenseId")
+    }
 }

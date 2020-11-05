@@ -10,7 +10,7 @@ data class NetworkCar(
     var productionYear: Int,
     var mileage: Double,
     var basePrice: Double?,
-    val engine: NetworkEngine?,
+    var engine: NetworkEngine?,
     var user: NetworkUser?,
     val fuelExpenses: List<NetworkFuelExpense>?
 ){

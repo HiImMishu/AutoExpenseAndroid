@@ -16,7 +16,7 @@ data class Car(
     var engineId: Long?
 )
 
-fun Car.carAsNetworkCar(): NetworkCar {
+fun Car.asNetworkCar(): NetworkCar {
     return NetworkCar(
         id = id,
         make = make,

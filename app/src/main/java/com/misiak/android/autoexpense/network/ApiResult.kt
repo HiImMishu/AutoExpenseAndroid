@@ -1,8 +1,6 @@
 package com.misiak.android.autoexpense.network
 
-import com.misiak.android.autoexpense.network.dto.NetworkCar
 import retrofit2.Response
-import kotlin.Exception
 
 sealed class ApiResult{
     data class Success<out T: Any?>(val data: T) : ApiResult()

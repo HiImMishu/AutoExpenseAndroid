@@ -6,6 +6,9 @@
         <variable
             name="fuelExpense"
             type="com.misiak.android.autoexpense.database.entity.FuelExpense" />
+        <variable
+            name="actionListener"
+            type="com.misiak.android.autoexpense.carinformation.FuelExpenseActionListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

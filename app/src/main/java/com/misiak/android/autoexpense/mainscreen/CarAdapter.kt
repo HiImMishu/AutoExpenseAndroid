@@ -95,7 +95,6 @@ class CarItemTouchHelper(): ItemTouchHelper.Callback() {
 
             ItemTouchHelper.RIGHT -> {
                 binding.clickListener!!.onClick(binding.carWithFuelExpense!!.car, ItemTouchHelper.RIGHT)
-                viewHolder.itemView
             }
         }
     }
@@ -119,7 +118,7 @@ class CarItemTouchHelper(): ItemTouchHelper.Callback() {
             .setSwipeLeftLabelColor(Color.WHITE)
             .setSwipeRightLabelColor(Color.WHITE)
             .create()
-            .decorate();
+            .decorate()
 
         super.onChildDraw(c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive)
     }

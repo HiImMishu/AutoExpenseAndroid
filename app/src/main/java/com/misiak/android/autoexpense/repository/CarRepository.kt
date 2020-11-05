@@ -4,14 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.room.Transaction
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.misiak.android.autoexpense.database.AutoExpenseDatabase
-import com.misiak.android.autoexpense.database.entity.Car
-import com.misiak.android.autoexpense.database.entity.Engine
-import com.misiak.android.autoexpense.database.entity.FuelExpense
-import com.misiak.android.autoexpense.database.entity.carAsNetworkCar
+import com.misiak.android.autoexpense.database.entity.*
 import com.misiak.android.autoexpense.database.view.CarWithLastFuelExpenseView
 import com.misiak.android.autoexpense.network.ApiResult
 import com.misiak.android.autoexpense.network.Network
 import com.misiak.android.autoexpense.network.dto.NetworkCar
+import com.misiak.android.autoexpense.network.dto.NetworkEngine
 import com.misiak.android.autoexpense.network.dto.NetworkUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -45,7 +43,7 @@ class CarRepository(private val database: AutoExpenseDatabase, var account: Goog
     }
 
     suspend fun saveCar(car: Car): ApiResult {
-        val carToSave = car.carAsNetworkCar()
+        val carToSave = car.asNetworkCar()
         val userResult = getUserToSavedCar()
 
         return if (userResult !is ApiResult.Success<*>)
@@ -87,36 +85,18 @@ class CarRepository(private val database: AutoExpenseDatabase, var account: Goog
     }
 
     suspend fun updateCar(car: Car): ApiResult {
-        val carToUpdateFetchResult = getCarFromServerToUpdate(car.id)
-
-        return if (carToUpdateFetchResult !is ApiResult.Success<*>)
-            carToUpdateFetchResult
-        else {
-            val updatedNetworkCar = updateCarInfo(carToUpdateFetchResult.data as NetworkCar, car)
-            val result = saveUpdatedCarToServer(updatedNetworkCar)
-            if (isSuccess(result))
-                updateCarInDatabase(car)
-            result
-        }
+        val carToUpdate = car.asNetworkCar()
+        carToUpdate.engine = getCarEngine(car.id)
+        val result = saveUpdatedCarToServer(carToUpdate)
+        if (isSuccess(result))
+            updateCarInDatabase(car)
+        return result
     }
 
-    private suspend fun getCarFromServerToUpdate(carId: Long): ApiResult {
-        return try {
-            val serverResponse = Network.cars.getCarAsync(token, carId).await()
-            ApiResult.apiResultFromResponse(serverResponse)
-        } catch (e: Exception) {
-            ApiResult.NetworkError(e)
+    private suspend fun getCarEngine(carId: Long): NetworkEngine {
+        return withContext(Dispatchers.IO) {
+            return@withContext database.carDao.getEngineByCarId(carId).asNetworkEngine()
         }
-    }
-
-    private fun updateCarInfo(networkCar: NetworkCar, car: Car): NetworkCar {
-        networkCar.make = car.make
-        networkCar.model = car.model
-        networkCar.productionYear = car.productionYear
-        networkCar.mileage = car.mileage
-        networkCar.basePrice = car.basePrice
-
-        return networkCar
     }
 
     private suspend fun updateCarInDatabase(car: Car) {
