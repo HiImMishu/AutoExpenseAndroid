@@ -14,6 +14,6 @@ class CarInformationViewModelFactory(
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CarInformationViewModel::class.java))
             return CarInformationViewModel(carId, repository) as T
-        throw throw IllegalArgumentException("Unknown ViewModel class")
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

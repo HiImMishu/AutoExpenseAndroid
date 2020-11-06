@@ -1,10 +1,7 @@
 package com.misiak.android.autoexpense.database.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.misiak.android.autoexpense.database.entity.Car
 import com.misiak.android.autoexpense.database.entity.Engine
 import com.misiak.android.autoexpense.database.entity.FuelExpense
@@ -23,9 +20,6 @@ interface CarDao {
 
     @Query("select * from FuelExpense fe where fe.carId = :carId")
     fun getFuelExpensesByCarIdAsync(carId: Long): LiveData<List<FuelExpense>>
-
-    @Query("select * from FuelExpense fe where fe.carId = :carId")
-    fun getFuelExpensesByCarId(carId: Long): List<FuelExpense>
 
     @Query("select * from Engine e where e.carId = :carId")
     fun getEngineByCarIdAsync(carId: Long): LiveData<Engine>
@@ -50,4 +44,10 @@ interface CarDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun saveEngines(vararg engines: Engine)
+
+    @Query("delete from FuelExpense where FuelExpense.fuelExpenseId = :fuelExpenseId")
+    fun deleteFuelExpenseById(fuelExpenseId: Long)
+
+    @Query("select * from FuelExpense fe where fe.fuelExpenseId = :fuelExpenseId")
+    fun getFuelExpenseById(fuelExpenseId: Long): LiveData<FuelExpense>
 }

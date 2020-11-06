@@ -27,7 +27,6 @@ class CarRepository(private val database: AutoExpenseDatabase, var account: Goog
             }
             result
         } catch (e: Exception) {
-            throw e
             ApiResult.NetworkError(e)
         }
     }
@@ -119,7 +118,7 @@ class CarRepository(private val database: AutoExpenseDatabase, var account: Goog
             val serverResponse = Network.cars.deleteCarAsync(token, carId).await()
             val result = ApiResult.apiResultFromResponse(serverResponse)
             if (isSuccess(result)) {
-                deleteFromDatabase(carId)
+                deleteCarFromDatabase(carId)
             }
             result
         } catch (e: Exception) {
@@ -128,11 +127,29 @@ class CarRepository(private val database: AutoExpenseDatabase, var account: Goog
     }
 
     @Transaction
-    private suspend fun deleteFromDatabase(carId: Long) {
+    private suspend fun deleteCarFromDatabase(carId: Long) {
         withContext(Dispatchers.IO) {
             database.carDao.deleteCarById(carId)
             database.carDao.deleteFuelExpensesByCarId(carId)
             database.carDao.deleteEngineByCarId(carId)
+        }
+    }
+
+    suspend fun deleteFuelExpense(fuelExpenseId: Long): ApiResult {
+        return try {
+            val serverResponse = Network.fuelExpenses.deleteFuelExpenseAsync(token, fuelExpenseId).await()
+            val result = ApiResult.apiResultFromResponse(serverResponse)
+            if (isSuccess(result))
+                deleteFuelExpenseFromDatabase(fuelExpenseId)
+            result
+        } catch (e: Exception) {
+            ApiResult.NetworkError(e)
+        }
+    }
+
+    private suspend fun deleteFuelExpenseFromDatabase(fuelExpenseId: Long) {
+        withContext(Dispatchers.IO) {
+            database.carDao.deleteFuelExpenseById(fuelExpenseId)
         }
     }
 

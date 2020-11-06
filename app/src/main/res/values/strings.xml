@@ -24,4 +24,10 @@
     <string name="model">Model:</string>
     <string name="add_new_car">Add new car</string>
     <string name="car_model">Car model</string>
+    <string name="edit_expense">Edit Expense</string>
+    <string name="fuel_price_per_liter">Fuel price per liter</string>
+    <string name="total_litres">Total litres</string>
+    <string name="car_mileage">Car Mileage:</string>
+    <string name="car_mileage_after_refuel">Car Mileage After Refuel</string>
+    <string name="expense_date">Expense Date:</string>
 </resources>
