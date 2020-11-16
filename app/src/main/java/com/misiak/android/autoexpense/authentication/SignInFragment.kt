@@ -1,11 +1,8 @@
 package com.misiak.android.autoexpense.authentication
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.BoringLayout.make
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,8 +19,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.snackbar.Snackbar.make
 import com.misiak.android.autoexpense.R
 import com.misiak.android.autoexpense.database.getDatabase
 import com.misiak.android.autoexpense.databinding.FragmentSignInBinding
@@ -39,7 +34,7 @@ private const val GOOGLE_SIGN_IN = 9001
 
 class SignInFragment : Fragment() {
 
-    lateinit var signInViewModel: SignInViewModel
+    private lateinit var signInViewModel: SignInViewModel
     private val job = Job()
 
     override fun onCreateView(
@@ -48,16 +43,27 @@ class SignInFragment : Fragment() {
     ): View? {
         val binding: FragmentSignInBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_sign_in, container, false)
-
-        latestSignedInUser()
-
         val googleSignInClient = getGoogleSignInClient(requireContext())
+
+        navigateWhenUserAlreadySigned()
 
         signInViewModel = ViewModelProvider(this).get(SignInViewModel::class.java)
         binding.viewModel = signInViewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        setGoogleSignInObserver(googleSignInClient)
+        hideActionBar()
 
+        return binding.root
+    }
+
+    private fun navigateWhenUserAlreadySigned() {
+        GoogleSignIn.getLastSignedInAccount(context)?.let {
+            navigateToMainScreen(it)
+        }
+    }
+
+    private fun setGoogleSignInObserver(googleSignInClient: GoogleSignInClient) {
         signInViewModel.googleSignIn.observe(viewLifecycleOwner, Observer { googleSignIn ->
             if (googleSignIn) {
                 val intent = googleSignInClient.signInIntent
@@ -65,9 +71,10 @@ class SignInFragment : Fragment() {
                 signInViewModel.onGoogleSignedIn()
             }
         })
+    }
 
+    private fun hideActionBar() {
         (activity as AppCompatActivity).supportActionBar?.hide()
-        return binding.root
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -86,7 +93,8 @@ class SignInFragment : Fragment() {
             signInUser(account!!)
             navigateToMainScreen(account)
         } catch (e: ApiException) {
-            Toast.makeText(requireContext(), "Check your internet connection", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "Check your internet connection", Toast.LENGTH_LONG)
+                .show()
         }
     }
 
@@ -99,18 +107,16 @@ class SignInFragment : Fragment() {
         }
     }
 
-    private fun latestSignedInUser() {
-        GoogleSignIn.getLastSignedInAccount(context)?.let {
-            navigateToMainScreen(it)
-        }
-    }
-
     private fun navigateToMainScreen(account: GoogleSignInAccount) {
-        findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToMainScreenFragment2(account))
+        findNavController().navigate(
+            SignInFragmentDirections.actionSignInFragmentToMainScreenFragment2(
+                account
+            )
+        )
     }
 
     companion object {
-         fun getGoogleSignInClient(context: Context): GoogleSignInClient {
+        fun getGoogleSignInClient(context: Context): GoogleSignInClient {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(CLIENT_ID)
                 .requestEmail()

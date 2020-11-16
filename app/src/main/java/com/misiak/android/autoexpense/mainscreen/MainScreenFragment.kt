@@ -74,7 +74,7 @@ class MainScreenFragment() : Fragment() {
             }
         })
 
-        binding.addCarCard.setOnClickListener {
+        binding.addCar.setOnClickListener {
             navigateToEditCar(-1, account, Action.SAVE)
         }
 

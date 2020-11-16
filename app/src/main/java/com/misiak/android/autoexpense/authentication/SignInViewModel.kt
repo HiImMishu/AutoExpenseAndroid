@@ -21,8 +21,4 @@ class SignInViewModel() : ViewModel() {
     fun onGoogleSignedIn() {
         _googleSignIn.value = false
     }
-
-    fun googleSignInComplete(name: String) {
-        _name.value = name
-    }
 }
