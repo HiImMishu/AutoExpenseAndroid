@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.misiak.android.autoexpense.R
 import com.misiak.android.autoexpense.database.entity.FuelExpense
 import com.misiak.android.autoexpense.database.getDatabase
@@ -46,12 +47,19 @@ class SaveOrUpdateFuelExpenseFragment : Fragment() {
         if (actionType == Action.UPDATE)
             editFuelExpense(fuelExpenseId)
 
+        viewModel.updateOrSaveCompleted.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                parentFragmentManager.popBackStack()
+                viewModel.updateOrSaveOperationHandled()
+            }
+        })
+
         binding.saveButton.setOnClickListener {
             if (isDataValid()) {
                 hideKeyboard()
                 val fuelExpense = extractFuelExpense()
                 if (actionType == Action.UPDATE)
-                    println(fuelExpense)
+                    viewModel.updateFuelExpense(fuelExpense)
             }
         }
 

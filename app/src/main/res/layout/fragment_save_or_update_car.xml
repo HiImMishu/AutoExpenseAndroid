@@ -30,7 +30,6 @@
             android:layout_height="match_parent"
             tools:visibility="visible">
 
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/carMiniatureCard"
                 android:layout_width="80dp"

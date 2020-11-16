@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -9,158 +9,152 @@
             type="com.misiak.android.autoexpense.carinformation.fuelexpenses.SaveOrUpdateFuelExpenseViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/save_or_update_fuel_expense_constraint"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/editFuelExpenseCard"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:cardBackgroundColor="@color/cardview_light_background"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/editFuelExpenseCard"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/cardview_light_background"
-            app:cardCornerRadius="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            android:layout_height="match_parent">
 
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/fuelExpenseMiniatureCard"
-                    android:layout_width="80dp"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/fuelExpenseMiniatureCard"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="40dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/fuel_expense_image"
+                    android:layout_width="match_parent"
                     android:layout_height="80dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    app:cardCornerRadius="40dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:padding="12dp"
+                    app:srcCompat="@drawable/gas" />
+            </androidx.cardview.widget.CardView>
 
-                    <ImageView
-                        android:id="@+id/fuel_expense_image"
-                        android:layout_width="match_parent"
-                        android:layout_height="80dp"
-                        android:padding="12dp"
-                        app:srcCompat="@drawable/gas" />
-                </androidx.cardview.widget.CardView>
+            <TextView
+                android:id="@+id/edit_fuel_expense_label"
+                style="@style/CarTitleText32"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="@string/edit_expense"
+                app:layout_constraintBottom_toBottomOf="@+id/fuelExpenseMiniatureCard"
+                app:layout_constraintStart_toEndOf="@+id/fuelExpenseMiniatureCard"
+                app:layout_constraintTop_toTopOf="@+id/fuelExpenseMiniatureCard" />
 
-                <TextView
-                    android:id="@+id/edit_fuel_expense_label"
-                    style="@style/CarTitleText32"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="@string/edit_expense"
-                    app:layout_constraintBottom_toBottomOf="@+id/fuelExpenseMiniatureCard"
-                    app:layout_constraintStart_toEndOf="@+id/fuelExpenseMiniatureCard"
-                    app:layout_constraintTop_toTopOf="@+id/fuelExpenseMiniatureCard" />
+            <Button
+                android:id="@+id/saveButton"
+                style="@android:style/TextAppearance.Material.Widget.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:background="@color/colorBlue"
+                android:text="@string/save"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fuel_expense_date_text"
+                app:layout_constraintVertical_bias="1.0"
+                tools:targetApi="n" />
 
-                <Button
-                    android:id="@+id/saveButton"
-                    style="@android:style/TextAppearance.Material.Widget.Button.Colored"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:background="@color/colorBlue"
-                    android:text="@string/save"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/fuel_expense_date_text"
-                    app:layout_constraintVertical_bias="1.0"
-                    tools:ignore="NewApi" />
+            <TextView
+                android:id="@+id/price_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/price_label"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/fuelExpenseMiniatureCard"
+                app:layout_constraintTop_toBottomOf="@+id/fuelExpenseMiniatureCard" />
 
-                <TextView
-                    android:id="@+id/price_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="@string/price_label"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="@+id/fuelExpenseMiniatureCard"
-                    app:layout_constraintTop_toBottomOf="@+id/fuelExpenseMiniatureCard" />
+            <EditText
+                android:id="@+id/price_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:ems="10"
+                android:hint="@string/fuel_price_per_liter"
+                android:inputType="numberDecimal"
+                app:layout_constraintBaseline_toBaselineOf="@+id/price_label"
+                app:layout_constraintStart_toStartOf="@+id/edit_fuel_expense_label" />
 
-                <EditText
-                    android:id="@+id/price_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:autofillHints=""
-                    android:ems="10"
-                    android:hint="@string/fuel_price_per_liter"
-                    android:inputType="numberDecimal"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/price_label"
-                    app:layout_constraintStart_toStartOf="@+id/edit_fuel_expense_label" />
+            <TextView
+                android:id="@+id/litres_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/litres_label"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/price_label"
+                app:layout_constraintTop_toBottomOf="@+id/price_label" />
 
-                <TextView
-                    android:id="@+id/litres_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="@string/litres_label"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="@+id/price_label"
-                    app:layout_constraintTop_toBottomOf="@+id/price_label" />
+            <EditText
+                android:id="@+id/litres_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:ems="10"
+                android:hint="@string/total_litres"
+                android:inputType="numberDecimal"
+                app:layout_constraintBaseline_toBaselineOf="@+id/litres_label"
+                app:layout_constraintStart_toStartOf="@+id/price_text" />
 
-                <EditText
-                    android:id="@+id/litres_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:autofillHints=""
-                    android:ems="10"
-                    android:hint="@string/total_litres"
-                    android:inputType="numberDecimal"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/litres_label"
-                    app:layout_constraintStart_toStartOf="@+id/price_text" />
+            <TextView
+                android:id="@+id/car_mileage_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/car_mileage"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/litres_label"
+                app:layout_constraintTop_toBottomOf="@+id/litres_label" />
 
-                <TextView
-                    android:id="@+id/car_mileage_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="@string/car_mileage"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="@+id/litres_label"
-                    app:layout_constraintTop_toBottomOf="@+id/litres_label" />
+            <EditText
+                android:id="@+id/car_mileage_text"
+                android:layout_width="210dp"
+                android:layout_height="43dp"
+                android:ems="10"
+                android:hint="@string/car_mileage_after_refuel"
+                android:importantForAutofill="no"
+                android:inputType="numberDecimal"
+                app:layout_constraintBaseline_toBaselineOf="@+id/car_mileage_label"
+                app:layout_constraintStart_toStartOf="@+id/litres_text" />
 
-                <EditText
-                    android:id="@+id/car_mileage_text"
-                    android:layout_width="210dp"
-                    android:layout_height="43dp"
-                    android:ems="10"
-                    android:hint="@string/car_mileage_after_refuel"
-                    android:importantForAutofill="no"
-                    android:inputType="numberDecimal"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/car_mileage_label"
-                    app:layout_constraintStart_toStartOf="@+id/litres_text" />
+            <TextView
+                android:id="@+id/fuel_expense_date_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/expense_date"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/car_mileage_label"
+                app:layout_constraintTop_toBottomOf="@+id/car_mileage_label" />
 
-                <TextView
-                    android:id="@+id/fuel_expense_date_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="@string/expense_date"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="@+id/car_mileage_label"
-                    app:layout_constraintTop_toBottomOf="@+id/car_mileage_label" />
+            <EditText
+                android:id="@+id/fuel_expense_date_text"
+                android:layout_width="210dp"
+                android:layout_height="41dp"
+                android:importantForAutofill="no"
+                android:inputType="datetime"
+                app:layout_constraintBaseline_toBaselineOf="@+id/fuel_expense_date_label"
+                app:layout_constraintStart_toStartOf="@+id/car_mileage_text" />
 
-                <EditText
-                    android:id="@+id/fuel_expense_date_text"
-                    android:layout_width="210dp"
-                    android:layout_height="41dp"
-                    android:importantForAutofill="no"
-                    android:inputType="datetime"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/fuel_expense_date_label"
-                    app:layout_constraintStart_toStartOf="@+id/car_mileage_text" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 </layout>
