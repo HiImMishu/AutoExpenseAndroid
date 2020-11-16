@@ -30,4 +30,9 @@
     <style name="CarTitleText32" parent="CarTitleText">
         <item name="android:textSize">32sp</item>
     </style>
+
+    <style name="error_appearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorRed</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>

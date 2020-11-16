@@ -116,7 +116,20 @@ class SignInFragment : Fragment() {
     }
 
     companion object {
-        fun getGoogleSignInClient(context: Context): GoogleSignInClient {
+        fun getAccount(context: Context, action: (account: GoogleSignInAccount) -> Unit) {
+            val googleSignInClient = getGoogleSignInClient(context)
+            val task = googleSignInClient.silentSignIn()
+            if (task.isComplete) {
+                action(task.getResult(ApiException::class.java)!!)
+            } else {
+                task.addOnCompleteListener {
+                    action(task.getResult(ApiException::class.java)!!)
+                    return@addOnCompleteListener
+                }
+            }
+        }
+
+        private fun getGoogleSignInClient(context: Context): GoogleSignInClient {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(CLIENT_ID)
                 .requestEmail()

@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
 import com.misiak.android.autoexpense.R
 import com.misiak.android.autoexpense.authentication.SignInFragment
@@ -26,6 +25,7 @@ class MainScreenFragment() : Fragment() {
     private lateinit var mainScreenViewModel: MainScreenViewModel
     private lateinit var binding: FragmentMainScreenBinding
     private lateinit var itemTouchHelper: ItemTouchHelper
+    private lateinit var repository: CarRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +34,7 @@ class MainScreenFragment() : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main_screen, container, false)
         val account = arguments?.let { MainScreenFragmentArgs.fromBundle(it).account }
         val database = getDatabase(requireContext().applicationContext)
-        val repository = CarRepository(database, account!!)
+        repository = CarRepository(database, account!!)
         val mainScreeViewModelFactory = MainScreeViewModelFactory(repository)
         mainScreenViewModel =
             ViewModelProvider(this, mainScreeViewModelFactory).get(MainScreenViewModel::class.java)
@@ -69,8 +69,11 @@ class MainScreenFragment() : Fragment() {
 
         mainScreenViewModel.tokenExpired.observe(viewLifecycleOwner, Observer {
             if (it) {
-                repository.account = getAccount()!!
-                mainScreenViewModel.tokenExpiredHandled()
+                SignInFragment.getAccount(requireContext()) { account ->
+                    updateRepositoryAccount(
+                        account
+                    )
+                }
             }
         })
 
@@ -80,6 +83,11 @@ class MainScreenFragment() : Fragment() {
 
         (activity as AppCompatActivity).supportActionBar?.show()
         return binding.root
+    }
+
+    private fun updateRepositoryAccount(account: GoogleSignInAccount) {
+        repository.account = account
+        mainScreenViewModel.tokenExpiredHandled()
     }
 
     private fun showSnackBar(message: String) {
@@ -128,19 +136,5 @@ class MainScreenFragment() : Fragment() {
                 account
             )
         )
-    }
-
-    private fun getAccount(): GoogleSignInAccount? {
-        val googleSignInClient = SignInFragment.getGoogleSignInClient(requireContext())
-        val task = googleSignInClient.silentSignIn()
-        if (task.isComplete) {
-            return task.getResult(ApiException::class.java)!!
-        } else {
-            while (!task.isComplete)
-            task.addOnCompleteListener {
-                return@addOnCompleteListener
-            }
-            return task.getResult(ApiException::class.java)!!
-        }
     }
 }

@@ -25,7 +25,7 @@ interface CarDao {
     fun getEngineByCarIdAsync(carId: Long): LiveData<Engine>
 
     @Query("select * from Engine e where e.carId = :carId")
-    fun getEngineByCarId(carId: Long): Engine
+    fun getEngineByCarId(carId: Long): Engine?
 
     @Query("delete from Car where Car.id = :carId")
     fun deleteCarById(carId: Long)

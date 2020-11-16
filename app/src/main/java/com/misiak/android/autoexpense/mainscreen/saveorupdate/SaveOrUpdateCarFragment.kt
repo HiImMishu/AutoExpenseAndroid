@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.material.snackbar.Snackbar
 import com.misiak.android.autoexpense.R
+import com.misiak.android.autoexpense.authentication.SignInFragment
 import com.misiak.android.autoexpense.database.entity.Car
 import com.misiak.android.autoexpense.database.getDatabase
 import com.misiak.android.autoexpense.databinding.FragmentSaveOrUpdateCarBinding
@@ -24,6 +26,7 @@ class SaveOrUpdateCarFragment : Fragment() {
     private lateinit var binding: FragmentSaveOrUpdateCarBinding
     private lateinit var viewModel: SaveOrUpdateViewModel
     private lateinit var account: GoogleSignInAccount
+    private lateinit var repository: CarRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,35 +39,27 @@ class SaveOrUpdateCarFragment : Fragment() {
             false
         )
         account = SaveOrUpdateCarFragmentArgs.fromBundle(requireArguments()).account
-        val carId = arguments?.let { SaveOrUpdateCarFragmentArgs.fromBundle(it).carId }
-        val action = arguments?.let { SaveOrUpdateCarFragmentArgs.fromBundle(it).action }
+        val carId = SaveOrUpdateCarFragmentArgs.fromBundle(requireArguments()).carId
+        val action = SaveOrUpdateCarFragmentArgs.fromBundle(requireArguments()).action
         val database = getDatabase(requireContext())
-        val repository = CarRepository(database, account)
+        repository = CarRepository(database, account)
         val viewModelFactory = SaveOrUpdateViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(SaveOrUpdateViewModel::class.java)
 
         if (action == Action.UPDATE)
-            editCar(carId!!)
-
-        binding.editCarCard.saveButton.setOnClickListener {
-            if (isDataValid()) {
-                hideKeyboard()
-                val car = extractCar()
-                if (action == Action.UPDATE)
-                    viewModel.updateCar(car)
-                else
-                    viewModel.saveCar(car)
-            }
-        }
+            editCar(carId)
+        setSaveButtonListener(action)
 
         viewModel.connectionError.observe(viewLifecycleOwner, Observer {
             if (it) {
-                Snackbar.make(
-                    requireView(),
-                    "Check your internet connection.",
-                    Snackbar.LENGTH_LONG
-                ).show()
+                makeSnackbar("Check your internet connection.")
                 viewModel.connectionErrorHandled()
+            }
+        })
+
+        viewModel.tokenExpired.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                SignInFragment.getAccount(requireContext()) { account -> updateRepositoryAccount(account)}
             }
         })
 
@@ -82,6 +77,32 @@ class SaveOrUpdateCarFragment : Fragment() {
         return binding.root
     }
 
+    private fun setSaveButtonListener(action: Action) {
+        binding.editCarCard.saveButton.setOnClickListener {
+            if (isDataValid()) {
+                hideKeyboard()
+                val car = extractCar()
+                if (action == Action.UPDATE)
+                    viewModel.updateCar(car)
+                else
+                    viewModel.saveCar(car)
+            }
+        }
+    }
+
+    private fun updateRepositoryAccount(account: GoogleSignInAccount) {
+        binding.editCarCard.saveButton.performClick()
+        viewModel.expiredTokenHandled()
+    }
+
+    private fun makeSnackbar(message: String) {
+        Snackbar.make(
+            requireView(),
+            message,
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
+
     private fun extractCar(): Car {
         return Car(
             id = viewModel.carToSave?.value?.id ?: 0,
@@ -96,8 +117,23 @@ class SaveOrUpdateCarFragment : Fragment() {
     }
 
     private fun isDataValid(): Boolean {
-        return true
-        //TODO("Validate fields")
+        var errorFlag = true
+        val fields = listOf(binding.makeText, binding.modelText, binding.productionYearText, binding.mileageText, binding.purchasePriceText)
+
+        fields.map { field ->
+            if (isFieldEmpty(field))
+                errorFlag = false
+        }
+
+        return errorFlag
+    }
+
+    private fun isFieldEmpty(field: EditText): Boolean {
+        return if (field.text.toString().isEmpty()) {
+            field.error = requireActivity().getString(R.string.empty_field_error)
+            true
+        } else
+            false
     }
 
     private fun fillCarValuesToEditScreen(car: Car) {

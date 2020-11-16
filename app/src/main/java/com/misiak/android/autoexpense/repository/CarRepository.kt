@@ -92,9 +92,9 @@ class CarRepository(private val database: AutoExpenseDatabase, var account: Goog
         return result
     }
 
-    private suspend fun getCarEngine(carId: Long): NetworkEngine {
+    private suspend fun getCarEngine(carId: Long): NetworkEngine? {
         return withContext(Dispatchers.IO) {
-            return@withContext database.carDao.getEngineByCarId(carId).asNetworkEngine()
+            return@withContext database.carDao.getEngineByCarId(carId)?.asNetworkEngine()
         }
     }
 
@@ -225,6 +225,4 @@ class CarRepository(private val database: AutoExpenseDatabase, var account: Goog
         }
         return engines.toTypedArray()
     }
-
-
 }

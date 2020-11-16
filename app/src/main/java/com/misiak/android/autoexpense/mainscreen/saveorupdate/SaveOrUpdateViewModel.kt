@@ -11,6 +11,8 @@ import kotlinx.coroutines.launch
 
 class SaveOrUpdateViewModel(val repository: CarRepository) : ViewModel() {
 
+    var carToSave: LiveData<Car>? = null
+
     private val _connectionError = MutableLiveData<Boolean>(false)
     val connectionError: LiveData<Boolean>
         get() = _connectionError
@@ -27,7 +29,13 @@ class SaveOrUpdateViewModel(val repository: CarRepository) : ViewModel() {
         _updateSuccess.value = false
     }
 
-    var carToSave: LiveData<Car>? = null
+    private val _tokenExpired = MutableLiveData<Boolean>(false)
+    val tokenExpired: LiveData<Boolean>
+        get() = _tokenExpired
+
+    fun expiredTokenHandled() {
+        _tokenExpired.value = false
+    }
 
     fun editCar(carId: Long) {
         viewModelScope.launch {
@@ -37,21 +45,21 @@ class SaveOrUpdateViewModel(val repository: CarRepository) : ViewModel() {
 
     fun updateCar(car: Car) {
         viewModelScope.launch {
-            when (repository.updateCar(car)) {
-                is ApiResult.NetworkError -> _connectionError.value = true
-                is ApiResult.Success<*> -> _updateSuccess.value = true
-            }
+            handleOperationResult(repository.updateCar(car))
         }
     }
 
     fun saveCar(car: Car) {
         viewModelScope.launch {
-            val result = repository.saveCar(car)
-            when (result) {
-                is ApiResult.NetworkError -> _connectionError.value = true
-                is ApiResult.Success<*> -> _updateSuccess.value = true
-            }
-            println(result)
+            handleOperationResult(repository.saveCar(car))
+        }
+    }
+
+    private fun handleOperationResult(result: ApiResult) {
+        when (result) {
+            is ApiResult.NetworkError -> _connectionError.value = true
+            is ApiResult.AuthenticationError -> _tokenExpired.value = true
+            is ApiResult.Success<*> -> _updateSuccess.value = true
         }
     }
 }
