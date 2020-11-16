@@ -6,6 +6,8 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface FuelExpenseService {
+    @POST("cars/fuel-expenses")
+    fun saveFuelExpenseAsync(@Header("Authorization") token: String, @Body networkFuelExpense: NetworkFuelExpense, @Query("car_id") carId: Long): Deferred<Response<NetworkFuelExpense>>
 
     @DELETE("/cars/fuel-expenses/{id}")
     fun deleteFuelExpenseAsync(@Header("Authorization") token: String, @Path("id") fuelExpenseId: Long): Deferred<Response<Unit>>

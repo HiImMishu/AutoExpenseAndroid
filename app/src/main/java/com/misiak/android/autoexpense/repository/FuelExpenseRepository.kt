@@ -24,9 +24,8 @@ class FuelExpenseRepository(private val database: AutoExpenseDatabase, val accou
         val fuelExpenseToUpdate = fuelExpense.asNetworkModel()
         val result = updateFuelExpenseOnServer(fuelExpenseToUpdate, fuelExpense.carId)
 
-        if (result is ApiResult.Success<*>) {
+        if (result is ApiResult.Success<*>)
             saveFuelExpenseToDatabase((result.data as NetworkFuelExpense).asDatabaseModel(fuelExpense.carId))
-        }
 
         return result
     }
@@ -40,12 +39,29 @@ class FuelExpenseRepository(private val database: AutoExpenseDatabase, val accou
         }
     }
 
+    suspend fun saveFuelExpense(fuelExpense: FuelExpense): ApiResult {
+        val fuelExpenseToSave = fuelExpense.asNetworkModel()
+        val result = saveFuelExpenseOnServer(fuelExpenseToSave, fuelExpense.carId)
+
+        if (result is ApiResult.Success<*>)
+            saveFuelExpenseToDatabase((result.data as NetworkFuelExpense).asDatabaseModel(fuelExpense.carId))
+
+        return result
+    }
+
+    private suspend fun saveFuelExpenseOnServer(fuelExpenseToSave: NetworkFuelExpense, carId: Long): ApiResult {
+        return try {
+            val serverResponse = Network.fuelExpenses.saveFuelExpenseAsync(token, fuelExpenseToSave, carId).await()
+            ApiResult.apiResultFromResponse(serverResponse)
+        } catch (e: Exception) {
+            ApiResult.NetworkError(e)
+        }
+    }
+
     private suspend fun saveFuelExpenseToDatabase(fuelExpense: FuelExpense) {
         withContext(Dispatchers.IO) {
             database.carDao.saveFuelExpenses(fuelExpense)
         }
     }
 
-    private fun isSuccess(result: ApiResult) =
-        result is ApiResult.Success<*>
 }

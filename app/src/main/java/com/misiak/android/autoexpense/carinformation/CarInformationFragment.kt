@@ -62,6 +62,8 @@ class CarInformationFragment : Fragment() {
             }
         })
 
+        binding.addFuelExpense.setOnClickListener { navigateToSaveOrUpdateFragment(Action.SAVE, -1) }
+
         return binding.root
     }
 

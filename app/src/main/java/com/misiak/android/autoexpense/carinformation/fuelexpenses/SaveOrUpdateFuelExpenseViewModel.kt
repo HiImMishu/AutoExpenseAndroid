@@ -36,4 +36,13 @@ class SaveOrUpdateFuelExpenseViewModel(val repository: FuelExpenseRepository): V
         }
     }
 
+    fun saveFuelExpense(fuelExpense: FuelExpense) {
+        viewModelScope.launch {
+            when (val result = repository.saveFuelExpense(fuelExpense)) {
+                is ApiResult.Success<*> -> _updateOrSaveCompleted.value = true
+                else -> println(result)
+            }
+        }
+    }
+
 }

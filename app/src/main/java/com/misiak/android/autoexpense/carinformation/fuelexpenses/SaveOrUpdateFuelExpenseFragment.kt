@@ -46,6 +46,8 @@ class SaveOrUpdateFuelExpenseFragment : Fragment() {
 
         if (actionType == Action.UPDATE)
             editFuelExpense(fuelExpenseId)
+        else
+            addActualDate()
 
         viewModel.updateOrSaveCompleted.observe(viewLifecycleOwner, Observer {
             if (it) {
@@ -60,6 +62,8 @@ class SaveOrUpdateFuelExpenseFragment : Fragment() {
                 val fuelExpense = extractFuelExpense()
                 if (actionType == Action.UPDATE)
                     viewModel.updateFuelExpense(fuelExpense)
+                else
+                    viewModel.saveFuelExpense(fuelExpense)
             }
         }
 
@@ -68,6 +72,10 @@ class SaveOrUpdateFuelExpenseFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun addActualDate() {
+        binding.fuelExpenseDateText.setText(formatDateToString(Date(System.currentTimeMillis())))
     }
 
     private fun editFuelExpense(fuelExpenseId: Long) {

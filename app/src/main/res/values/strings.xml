@@ -30,4 +30,6 @@
     <string name="car_mileage">Car Mileage:</string>
     <string name="car_mileage_after_refuel">Car Mileage After Refuel</string>
     <string name="expense_date">Expense Date:</string>
+    <string name="extended_fab_content_desc">Add fuel expense</string>
+    <string name="extended_fab_label">Add Fuel Expense</string>
 </resources>
