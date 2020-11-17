@@ -27,6 +27,12 @@ interface CarDao {
     @Query("select * from Engine e where e.carId = :carId")
     fun getEngineByCarId(carId: Long): Engine?
 
+    @Query("update Car set engineId = :engineId where id = :carId")
+    fun updateCarEngineId(carId: Long, engineId: Long)
+
+    @Query("select * from Engine e where e.id = :engineId")
+    fun getEngineByIdAsync(engineId: Long): LiveData<Engine>
+
     @Query("delete from Car where Car.id = :carId")
     fun deleteCarById(carId: Long)
 

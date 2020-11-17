@@ -44,6 +44,9 @@
         <action
             android:id="@+id/action_carInformationFragment_to_saveOrUpdateFuelExpenseFragment"
             app:destination="@id/saveOrUpdateFuelExpenseFragment" />
+        <action
+            android:id="@+id/action_carInformationFragment_to_saveOrUpdateEngineFragment"
+            app:destination="@id/saveOrUpdateEngineFragment" />
     </fragment>
     <fragment
         android:id="@+id/saveOrUpdateCarFragment"
@@ -70,6 +73,24 @@
             app:argType="com.google.android.gms.auth.api.signin.GoogleSignInAccount" />
         <argument
             android:name="fuelExpenseId"
+            app:argType="long" />
+        <argument
+            android:name="action"
+            app:argType="com.misiak.android.autoexpense.mainscreen.saveorupdate.Action"/>
+        <argument
+            android:name="carId"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/saveOrUpdateEngineFragment"
+        android:name="com.misiak.android.autoexpense.carinformation.engine.SaveOrUpdateEngineFragment"
+        android:label="fragment_save_or_update_engine"
+        tools:layout="@layout/fragment_save_or_update_engine">
+        <argument
+            android:name="account"
+            app:argType="com.google.android.gms.auth.api.signin.GoogleSignInAccount" />
+        <argument
+            android:name="engineId"
             app:argType="long" />
         <argument
             android:name="action"

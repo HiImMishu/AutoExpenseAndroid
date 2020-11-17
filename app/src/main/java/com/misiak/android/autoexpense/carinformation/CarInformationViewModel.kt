@@ -26,6 +26,14 @@ class CarInformationViewModel(carId: Long, private val repository: CarRepository
     val serverError: LiveData<Boolean>
         get() = _serverError
 
+    private val _navigateToAddEngine = MutableLiveData<Boolean>(false)
+    val navigateToAddEngine: LiveData<Boolean>
+        get() = _navigateToAddEngine
+
+    fun doneNavigatingToAddEngine() {
+       _navigateToAddEngine.value = false
+    }
+
     fun deleteFuelExpense(fuelExpenseId: Long) {
         viewModelScope.launch {
             when (repository.deleteFuelExpense(fuelExpenseId)) {
@@ -33,5 +41,9 @@ class CarInformationViewModel(carId: Long, private val repository: CarRepository
                 is ApiResult.ServerError -> _serverError.value = true
             }
         }
+    }
+
+    fun addEngineClicked() {
+        _navigateToAddEngine.value = true
     }
 }

@@ -47,6 +47,13 @@ class CarInformationFragment : Fragment() {
         binding.fuelExpenseRecycler.adapter = adapter
         itemTouchHelper.attachToRecyclerView(binding.fuelExpenseRecycler)
 
+        viewModel.navigateToAddEngine.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                navigateToSaveOrUpdateEngineFragment(Action.SAVE, -1)
+                viewModel.doneNavigatingToAddEngine()
+            }
+        })
+
         viewModel.car.observe(viewLifecycleOwner, Observer { car ->
             car?.let {
                 if (it.engineId == null)
@@ -62,7 +69,12 @@ class CarInformationFragment : Fragment() {
             }
         })
 
-        binding.addFuelExpense.setOnClickListener { navigateToSaveOrUpdateFragment(Action.SAVE, -1) }
+        binding.addFuelExpense.setOnClickListener {
+            navigateToSaveOrUpdateFragment(
+                Action.SAVE,
+                -1
+            )
+        }
 
         return binding.root
     }
@@ -83,12 +95,25 @@ class CarInformationFragment : Fragment() {
     }
 
     private fun navigateToSaveOrUpdateFragment(actionType: Action, fuelExpenseId: Long) {
-        findNavController().navigate(CarInformationFragmentDirections.actionCarInformationFragmentToSaveOrUpdateFuelExpenseFragment(
-            account,
-            fuelExpenseId,
-            actionType,
-            carId
-        ))
+        findNavController().navigate(
+            CarInformationFragmentDirections.actionCarInformationFragmentToSaveOrUpdateFuelExpenseFragment(
+                account,
+                fuelExpenseId,
+                actionType,
+                carId
+            )
+        )
+    }
+
+    private fun navigateToSaveOrUpdateEngineFragment(actionType: Action, engineId: Long) {
+        findNavController().navigate(
+            CarInformationFragmentDirections.actionCarInformationFragmentToSaveOrUpdateEngineFragment(
+                account,
+                engineId,
+                actionType,
+                carId
+            )
+        )
     }
 
 }
