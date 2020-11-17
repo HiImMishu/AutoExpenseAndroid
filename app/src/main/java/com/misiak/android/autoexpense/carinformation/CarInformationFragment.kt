@@ -33,13 +33,13 @@ class CarInformationFragment : Fragment() {
         carId = CarInformationFragmentArgs.fromBundle(requireArguments()).carId
         account = CarInformationFragmentArgs.fromBundle(requireArguments()).account
         val database = getDatabase(requireContext().applicationContext)
-        val repository = CarRepository(database, account!!)
+        val repository = CarRepository(database, account)
         val adapter = FuelExpenseAdapter(FuelExpenseActionListener { fuelExpenseId, action ->
             fuelExpenseActionHandler(fuelExpenseId, action)
         })
         val fuelExpenseItemTouchHelper = FuelExpenseItemTouchHelper()
         val itemTouchHelper = ItemTouchHelper(fuelExpenseItemTouchHelper)
-        val viewModelFactory = CarInformationViewModelFactory(carId!!, repository)
+        val viewModelFactory = CarInformationViewModelFactory(carId, repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(CarInformationViewModel::class.java)
 
         binding.viewModel = viewModel

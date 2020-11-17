@@ -34,4 +34,9 @@
     <string name="extended_fab_label">Add Fuel Expense</string>
     <string name="empty_field_error">Field cannot be empty</string>
     <string name="invalid_date_error">Please enter valid date</string>
+    <string name="add_engine">Add Engine</string>
+    <string name="edit_engine">Edit Engine</string>
+    <string name="engine_capacity">Engine capacity in ccm</string>
+    <string name="engine_horsepower">Engine horsepower</string>
+    <string name="number_of_cylinders">Number of cylinders</string>
 </resources>
