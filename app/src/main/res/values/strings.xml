@@ -33,4 +33,5 @@
     <string name="extended_fab_content_desc">Add fuel expense</string>
     <string name="extended_fab_label">Add Fuel Expense</string>
     <string name="empty_field_error">Field cannot be empty</string>
+    <string name="invalid_date_error">Please enter valid date</string>
 </resources>

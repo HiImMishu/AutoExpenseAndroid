@@ -44,5 +44,4 @@ class SaveOrUpdateFuelExpenseViewModel(val repository: FuelExpenseRepository): V
             }
         }
     }
-
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +20,8 @@ import com.misiak.android.autoexpense.databinding.FragmentSaveOrUpdateCarBinding
 import com.misiak.android.autoexpense.databinding.FragmentSaveOrUpdateFuelExpenseBinding
 import com.misiak.android.autoexpense.mainscreen.saveorupdate.Action
 import com.misiak.android.autoexpense.repository.FuelExpenseRepository
+import java.lang.Exception
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -102,8 +105,36 @@ class SaveOrUpdateFuelExpenseFragment : Fragment() {
     }
 
     private fun isDataValid(): Boolean {
+        var errorFlag = true
+        val fields = listOf(binding.priceText, binding.litresText, binding.carMileageText, binding.fuelExpenseDateText)
+
+        fields.map { field ->
+            if (isFieldEmpty(field))
+                errorFlag = false
+        }
+
+        if (!isDateValid())
+            errorFlag = false
+
+        return errorFlag
+    }
+
+    private fun isFieldEmpty(field: EditText): Boolean {
+        return if (field.text.toString().isEmpty()) {
+            field.error = requireActivity().getString(R.string.empty_field_error)
+            true
+        } else
+            false
+    }
+
+    private fun isDateValid(): Boolean {
+        try {
+            extractDateFromString(binding.fuelExpenseDateText.text.toString())
+        } catch (e: ParseException) {
+            binding.fuelExpenseDateText.error = requireActivity().getString(R.string.invalid_date_error)
+            return false
+        }
         return true
-        //TODO("Validate fields")
     }
 
     private fun extractFuelExpense(): FuelExpense {

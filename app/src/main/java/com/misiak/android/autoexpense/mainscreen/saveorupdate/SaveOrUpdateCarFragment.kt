@@ -91,8 +91,8 @@ class SaveOrUpdateCarFragment : Fragment() {
     }
 
     private fun updateRepositoryAccount(account: GoogleSignInAccount) {
-        binding.editCarCard.saveButton.performClick()
         viewModel.expiredTokenHandled()
+        binding.editCarCard.saveButton.performClick()
     }
 
     private fun makeSnackbar(message: String) {
