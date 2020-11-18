@@ -12,18 +12,18 @@ import android.widget.EditText
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.material.snackbar.Snackbar
 import com.misiak.android.autoexpense.R
+import com.misiak.android.autoexpense.authentication.SignInFragment
 import com.misiak.android.autoexpense.database.entity.FuelExpense
 import com.misiak.android.autoexpense.database.getDatabase
-import com.misiak.android.autoexpense.databinding.FragmentSaveOrUpdateCarBinding
 import com.misiak.android.autoexpense.databinding.FragmentSaveOrUpdateFuelExpenseBinding
 import com.misiak.android.autoexpense.mainscreen.saveorupdate.Action
 import com.misiak.android.autoexpense.repository.FuelExpenseRepository
-import java.lang.Exception
+import kotlinx.android.synthetic.main.fragment_save_or_update_car.view.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -52,33 +52,14 @@ class SaveOrUpdateFuelExpenseFragment : Fragment() {
         else
             addActualDate()
 
-        viewModel.updateOrSaveCompleted.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                parentFragmentManager.popBackStack()
-                viewModel.updateOrSaveOperationHandled()
-            }
-        })
-
-        binding.saveButton.setOnClickListener {
-            if (isDataValid()) {
-                hideKeyboard()
-                val fuelExpense = extractFuelExpense()
-                if (actionType == Action.UPDATE)
-                    viewModel.updateFuelExpense(fuelExpense)
-                else
-                    viewModel.saveFuelExpense(fuelExpense)
-            }
-        }
-
-        binding.editFuelExpenseCard.setOnClickListener {
-            hideKeyboard()
-        }
+        setUpSuccessListener()
+        setUpSaveButtonListener(actionType)
+        setUpHideKeyboardOnBackgroundClickListener()
+        setUpConnectionErrorListener()
+        setUpTokenExpirationListener()
+        setUpOperationFailedListener()
 
         return binding.root
-    }
-
-    private fun addActualDate() {
-        binding.fuelExpenseDateText.setText(formatDateToString(Date(System.currentTimeMillis())))
     }
 
     private fun editFuelExpense(fuelExpenseId: Long) {
@@ -102,6 +83,32 @@ class SaveOrUpdateFuelExpenseFragment : Fragment() {
     private fun formatDateToString(date: Date): String {
         val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
         return dateFormat.format(date)
+    }
+
+    private fun addActualDate() {
+        binding.fuelExpenseDateText.setText(formatDateToString(Date(System.currentTimeMillis())))
+    }
+
+    private fun setUpSuccessListener() {
+        viewModel.updateOrSaveCompleted.observe(viewLifecycleOwner, Observer { statusActive ->
+            if (statusActive) {
+                parentFragmentManager.popBackStack()
+                viewModel.updateOrSaveOperationHandled()
+            }
+        })
+    }
+
+    private fun setUpSaveButtonListener(actionType: Action) {
+        binding.saveButton.setOnClickListener {
+            if (isDataValid()) {
+                hideKeyboard()
+                val fuelExpense = extractFuelExpense()
+                if (actionType == Action.UPDATE)
+                    viewModel.updateFuelExpense(fuelExpense)
+                else
+                    viewModel.saveFuelExpense(fuelExpense)
+            }
+        }
     }
 
     private fun isDataValid(): Boolean {
@@ -137,6 +144,12 @@ class SaveOrUpdateFuelExpenseFragment : Fragment() {
         return true
     }
 
+    @SuppressLint("SimpleDateFormat")
+    private fun extractDateFromString(date: String): Date {
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
+        return dateFormat.parse(date)!!
+    }
+
     private fun extractFuelExpense(): FuelExpense {
         return FuelExpense(
             fuelExpenseId = viewModel.fuelExpenseToSave?.value?.fuelExpenseId ?: 0,
@@ -150,10 +163,51 @@ class SaveOrUpdateFuelExpenseFragment : Fragment() {
         )
     }
 
-    @SuppressLint("SimpleDateFormat")
-    private fun extractDateFromString(date: String): Date {
-        val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
-        return dateFormat.parse(date)!!
+    private fun setUpHideKeyboardOnBackgroundClickListener() {
+        binding.editFuelExpenseCard.setOnClickListener {
+            hideKeyboard()
+        }
+    }
+
+    private fun setUpConnectionErrorListener() {
+        viewModel.connectionError.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                showSnackBar(requireActivity().getString(R.string.internet_connection_error))
+                viewModel.connectionErrorHandled()
+            }
+        })
+    }
+
+    private fun setUpTokenExpirationListener() {
+        viewModel.tokenExpired.observe(viewLifecycleOwner, Observer { tokenIsExpired ->
+            if (tokenIsExpired) {
+                SignInFragment.getAccount(requireContext()) { account ->
+                    updateRepositoryAccount(account)
+                }
+            }
+        })
+    }
+
+    private fun updateRepositoryAccount(account: GoogleSignInAccount) {
+        viewModel.tokenRefreshed()
+        binding.editFuelExpenseCard.saveButton.performClick()
+    }
+
+    private fun setUpOperationFailedListener() {
+        viewModel.unknownError.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                showSnackBar(requireActivity().getString(R.string.operation_failed_error))
+                viewModel.unknownErrorHandled()
+            }
+        })
+    }
+
+    private fun showSnackBar(message: String) {
+        Snackbar.make(
+            requireView(),
+            message,
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 
     private fun hideKeyboard() {
@@ -161,5 +215,4 @@ class SaveOrUpdateFuelExpenseFragment : Fragment() {
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
-
 }
