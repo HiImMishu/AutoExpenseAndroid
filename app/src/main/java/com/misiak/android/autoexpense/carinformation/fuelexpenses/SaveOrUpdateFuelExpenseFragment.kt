@@ -31,6 +31,7 @@ class SaveOrUpdateFuelExpenseFragment : Fragment() {
 
     private lateinit var binding: FragmentSaveOrUpdateFuelExpenseBinding
     private lateinit var viewModel: SaveOrUpdateFuelExpenseViewModel
+    private lateinit var repository: FuelExpenseRepository
     private var carId by Delegates.notNull<Long>()
 
     override fun onCreateView(
@@ -43,7 +44,7 @@ class SaveOrUpdateFuelExpenseFragment : Fragment() {
         val actionType = SaveOrUpdateFuelExpenseFragmentArgs.fromBundle(requireArguments()).action
         carId = SaveOrUpdateFuelExpenseFragmentArgs.fromBundle(requireArguments()).carId
         val database = getDatabase(requireContext())
-        val repository = FuelExpenseRepository(database, account)
+        repository = FuelExpenseRepository(database, account)
         val viewModelFactory = SaveOrUpdateFuelExpenseViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(SaveOrUpdateFuelExpenseViewModel::class.java)
 
@@ -189,6 +190,7 @@ class SaveOrUpdateFuelExpenseFragment : Fragment() {
     }
 
     private fun updateRepositoryAccount(account: GoogleSignInAccount) {
+        repository.account = account
         viewModel.tokenRefreshed()
         binding.editFuelExpenseCard.saveButton.performClick()
     }

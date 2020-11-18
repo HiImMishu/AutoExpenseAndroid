@@ -12,7 +12,7 @@ import com.misiak.android.autoexpense.network.dto.asDatabaseModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class FuelExpenseRepository(private val database: AutoExpenseDatabase, val account: GoogleSignInAccount) {
+class FuelExpenseRepository(private val database: AutoExpenseDatabase, var account: GoogleSignInAccount) {
 
     private val token = "Bearer ${account.idToken!!}"
 

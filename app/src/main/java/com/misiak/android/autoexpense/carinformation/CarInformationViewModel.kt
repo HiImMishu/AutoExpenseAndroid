@@ -11,20 +11,36 @@ import com.misiak.android.autoexpense.network.ApiResult
 import com.misiak.android.autoexpense.repository.CarRepository
 import kotlinx.coroutines.launch
 
-class CarInformationViewModel(carId: Long, private val repository: CarRepository) :
+class CarInformationViewModel(private val carId: Long, private val repository: CarRepository) :
     ViewModel() {
 
     val car: LiveData<Car> = repository.getCarById(carId)
     val engine: LiveData<Engine> = repository.getEngineByCarId(carId)
     val fuelExpenses: LiveData<List<FuelExpense>> = repository.getFuelExpensesByCarId(carId)
 
-    private val _connectionError = MutableLiveData<Boolean>(false)
+    private var _tokenExpired = MutableLiveData<Boolean>(false)
+    val tokenExpired: LiveData<Boolean>
+        get() = _tokenExpired
+
+    fun tokenRefreshed() {
+        _tokenExpired.value = false
+    }
+
+    private var _connectionError = MutableLiveData<Boolean>(false)
     val connectionError: LiveData<Boolean>
         get() = _connectionError
 
-    private val _serverError = MutableLiveData<Boolean>(false)
-    val serverError: LiveData<Boolean>
-        get() = _serverError
+    fun connectionErrorHandled() {
+        _connectionError.value = false
+    }
+
+    private var _unknownError = MutableLiveData<Boolean>(false)
+    val unknownError: LiveData<Boolean>
+        get() = _unknownError
+
+    fun unknownErrorHandled() {
+        _unknownError.value = false
+    }
 
     private val _navigateToAddEngine = MutableLiveData<Boolean>(false)
     val navigateToAddEngine: LiveData<Boolean>
@@ -37,8 +53,9 @@ class CarInformationViewModel(carId: Long, private val repository: CarRepository
     fun deleteFuelExpense(fuelExpenseId: Long) {
         viewModelScope.launch {
             when (repository.deleteFuelExpense(fuelExpenseId)) {
+                is ApiResult.AuthenticationError -> _tokenExpired.value = true
                 is ApiResult.NetworkError -> _connectionError.value = true
-                is ApiResult.ServerError -> _serverError.value = true
+                else -> _unknownError.value = true
             }
         }
     }

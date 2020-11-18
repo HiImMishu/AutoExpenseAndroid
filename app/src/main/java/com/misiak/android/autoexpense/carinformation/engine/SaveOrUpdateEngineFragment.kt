@@ -26,6 +26,7 @@ class SaveOrUpdateEngineFragment : Fragment() {
 
     private lateinit var binding: FragmentSaveOrUpdateEngineBinding
     private lateinit var viewModel: SaveOrUpdateEngineViewModel
+    private lateinit var repository: EngineRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,7 +38,7 @@ class SaveOrUpdateEngineFragment : Fragment() {
         val carId = SaveOrUpdateEngineFragmentArgs.fromBundle(requireArguments()).carId
         val engineId = SaveOrUpdateEngineFragmentArgs.fromBundle(requireArguments()).engineId
         val database = getDatabase(requireContext())
-        val repository = EngineRepository(database, account)
+        repository = EngineRepository(database, account)
         val viewModelFactory = SaveOrUpdateEngineViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(SaveOrUpdateEngineViewModel::class.java)
 
@@ -89,6 +90,7 @@ class SaveOrUpdateEngineFragment : Fragment() {
     }
 
     private fun updateRepositoryAccount(account: GoogleSignInAccount) {
+        repository.account = account
         viewModel.tokenRefreshed()
         binding.editEngineCard.saveButton.performClick()
     }
