@@ -49,4 +49,23 @@ class EngineRepository(
         }
     }
 
+    suspend fun updateEngine(engine: Engine): ApiResult {
+        val engineToUpdate = engine.asNetworkEngine()
+        val result = updateEngineOnServer(engineToUpdate, engine.carId)
+
+        if (result is ApiResult.Success<*>)
+            saveEngineToDatabase((result.data as NetworkEngine).asDatabaseEngine(engine.carId))
+
+        return result
+    }
+
+    private suspend fun updateEngineOnServer(engine: NetworkEngine, carId: Long): ApiResult {
+        return try {
+            val serverResponse = Network.engines.updateEngineAsync(token, engine, carId).await()
+            ApiResult.apiResultFromResponse(serverResponse)
+        } catch (e: Exception) {
+            ApiResult.NetworkError(e)
+        }
+    }
+
 }

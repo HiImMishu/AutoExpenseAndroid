@@ -57,7 +57,7 @@ class CarInformationFragment : Fragment() {
         viewModel.car.observe(viewLifecycleOwner, Observer { car ->
             car?.let {
                 if (it.engineId == null)
-                    binding.expandableEngineInfo.setAdapter(EngineInformationAdapter(null))
+                    binding.expandableEngineInfo.setAdapter(EngineInformationAdapter(null, editEngineAction()))
                 else
                     setEngineObserver()
             }
@@ -82,7 +82,7 @@ class CarInformationFragment : Fragment() {
     private fun setEngineObserver() {
         viewModel.engine.observe(viewLifecycleOwner, Observer { engine ->
             engine?.let {
-                binding.expandableEngineInfo.setAdapter(EngineInformationAdapter(it))
+                binding.expandableEngineInfo.setAdapter(EngineInformationAdapter(it, editEngineAction()))
             }
         })
     }
@@ -114,6 +114,12 @@ class CarInformationFragment : Fragment() {
                 carId
             )
         )
+    }
+
+    private fun editEngineAction(): EngineActionListener {
+        return EngineActionListener { engineId ->
+            navigateToSaveOrUpdateEngineFragment(Action.UPDATE, engineId)
+        }
     }
 
 }

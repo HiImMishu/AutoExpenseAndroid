@@ -8,4 +8,7 @@ import retrofit2.http.*
 interface EngineService {
     @POST("/cars/engines")
     fun saveEngineAsync(@Header("Authorization") token: String, @Body engine: NetworkEngine, @Query("car_id") carId: Long): Deferred<Response<NetworkEngine>>
+
+    @PUT("/cars/engines")
+    fun updateEngineAsync(@Header("Authorization") token: String, @Body engine: NetworkEngine, @Query("car_id") carId: Long): Deferred<Response<NetworkEngine>>
 }

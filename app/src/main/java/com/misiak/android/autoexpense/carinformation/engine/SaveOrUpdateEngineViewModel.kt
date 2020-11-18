@@ -28,7 +28,9 @@ class SaveOrUpdateEngineViewModel(private val repository: EngineRepository) : Vi
     }
 
     fun updateEngine(engine: Engine) {
-
+        viewModelScope.launch {
+            handleResult(repository.updateEngine(engine))
+        }
     }
 
     fun saveEngine(engine: Engine) {

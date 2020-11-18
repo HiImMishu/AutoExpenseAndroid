@@ -4,16 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="engine"
             type="com.misiak.android.autoexpense.database.entity.Engine" />
+        <variable
+            name="actionListener"
+            type="com.misiak.android.autoexpense.carinformation.EngineActionListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorButtonNormal">
+        android:background="@color/cardview_light_background">
 
         <TextView
             android:id="@+id/capacity_label"
@@ -96,5 +98,19 @@
             app:layout_constraintTop_toBottomOf="@+id/horsepower_text"
             tools:text="4" />
 
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="16dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:onClick="@{() -> actionListener.onEditClicked(engine.id)}"
+            app:cornerRadius="10dp"
+            app:icon="@drawable/edit_icon"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
