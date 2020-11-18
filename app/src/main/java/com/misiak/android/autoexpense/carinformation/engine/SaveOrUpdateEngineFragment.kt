@@ -11,12 +11,16 @@ import android.widget.EditText
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.material.snackbar.Snackbar
 import com.misiak.android.autoexpense.R
+import com.misiak.android.autoexpense.authentication.SignInFragment
 import com.misiak.android.autoexpense.database.entity.Engine
 import com.misiak.android.autoexpense.database.getDatabase
 import com.misiak.android.autoexpense.databinding.FragmentSaveOrUpdateEngineBinding
 import com.misiak.android.autoexpense.mainscreen.saveorupdate.Action
 import com.misiak.android.autoexpense.repository.EngineRepository
+import kotlinx.android.synthetic.main.fragment_save_or_update_car.view.*
 
 class SaveOrUpdateEngineFragment : Fragment() {
 
@@ -40,27 +44,12 @@ class SaveOrUpdateEngineFragment : Fragment() {
         if (action == Action.UPDATE)
             editEngine(engineId)
 
-        viewModel.updateOrSaveCompleted.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                parentFragmentManager.popBackStack()
-                viewModel.updateOrSaveOperationHandled()
-            }
-        })
-
-        binding.saveButton.setOnClickListener {
-            if (isDataValid()) {
-                hideKeyboard()
-                val engine = extractEngine(carId)
-                if (action == Action.UPDATE)
-                    viewModel.updateEngine(engine)
-                else
-                    viewModel.saveEngine(engine)
-            }
-        }
-
-        binding.editEngineCard.setOnClickListener {
-            hideKeyboard()
-        }
+        setUpSuccessListener()
+        setUpTokenExpirationListener()
+        setUpConnectionErrorListener()
+        setUpOperationFailedListener()
+        setUpSaveButtonClickListener(carId, action)
+        setUpHideKeyboardOnBackgroundClickListener()
 
         return binding.root
     }
@@ -75,14 +64,67 @@ class SaveOrUpdateEngineFragment : Fragment() {
         })
     }
 
-    private fun extractEngine(carId: Long): Engine {
-        return Engine(
-            id = viewModel.engineToSave?.value?.id ?: 0,
-            capacity = binding.capacityText.text.toString().toDouble(),
-            horsepower = binding.horsepowerText.text.toString().toDouble(),
-            cylinders = binding.cylindersText.text.toString().toInt(),
-            carId = carId
-        )
+    private fun fillEngineValuesToUpdateScree(engine: Engine) {
+        binding.capacityText.setText(engine.capacity.toString())
+        binding.horsepowerText.setText(engine.horsepower.toString())
+        binding.cylindersText.setText(engine.cylinders.toString())
+    }
+
+    private fun setUpSuccessListener() {
+        viewModel.updateOrSaveCompleted.observe(viewLifecycleOwner, Observer { statusActive ->
+            if (statusActive) {
+                parentFragmentManager.popBackStack()
+                viewModel.updateOrSaveOperationHandled()
+            }
+        })
+    }
+
+    private fun setUpTokenExpirationListener() {
+        viewModel.tokenExpired.observe(viewLifecycleOwner, Observer { tokenIsExpired ->
+            if (tokenIsExpired)
+                SignInFragment.getAccount(requireContext()) { account ->
+                    updateRepositoryAccount(account)
+                }
+        })
+    }
+
+    private fun updateRepositoryAccount(account: GoogleSignInAccount) {
+        viewModel.tokenRefreshed()
+        binding.editEngineCard.saveButton.performClick()
+    }
+
+    private fun setUpConnectionErrorListener() {
+        viewModel.connectionError.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                showSnackBar(requireActivity().getString(R.string.internet_connection_error))
+                viewModel.connectionErrorHandled()
+            }
+        })
+    }
+
+    private fun setUpOperationFailedListener() {
+        viewModel.unknownError.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                showSnackBar(requireActivity().getString(R.string.operation_failed_error))
+                viewModel.unknownErrorHandled()
+            }
+        })
+    }
+
+    private fun setUpSaveButtonClickListener(
+        carId: Long,
+        action: Action
+    ) {
+        binding.saveButton.setOnClickListener {
+            if (isDataValid()) {
+                hideKeyboard()
+                val engine = extractEngine(carId)
+                if (action == Action.UPDATE)
+                    viewModel.updateEngine(engine)
+                else
+                    viewModel.saveEngine(engine)
+            }
+        }
     }
 
     private fun isDataValid(): Boolean {
@@ -105,10 +147,28 @@ class SaveOrUpdateEngineFragment : Fragment() {
             false
     }
 
-    private fun fillEngineValuesToUpdateScree(engine: Engine) {
-        binding.capacityText.setText(engine.capacity.toString())
-        binding.horsepowerText.setText(engine.horsepower.toString())
-        binding.cylindersText.setText(engine.cylinders.toString())
+    private fun extractEngine(carId: Long): Engine {
+        return Engine(
+            id = viewModel.engineToSave?.value?.id ?: 0,
+            capacity = binding.capacityText.text.toString().toDouble(),
+            horsepower = binding.horsepowerText.text.toString().toDouble(),
+            cylinders = binding.cylindersText.text.toString().toInt(),
+            carId = carId
+        )
+    }
+
+    private fun setUpHideKeyboardOnBackgroundClickListener() {
+        binding.editEngineCard.setOnClickListener {
+            hideKeyboard()
+        }
+    }
+
+    private fun showSnackBar(message: String) {
+        Snackbar.make(
+            requireView(),
+            message,
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 
     private fun hideKeyboard() {
