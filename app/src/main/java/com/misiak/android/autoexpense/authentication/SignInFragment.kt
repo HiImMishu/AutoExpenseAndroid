@@ -119,9 +119,9 @@ class SignInFragment : Fragment() {
         fun getAccount(context: Context, action: (account: GoogleSignInAccount) -> Unit) {
             val googleSignInClient = getGoogleSignInClient(context)
             val task = googleSignInClient.silentSignIn()
-            task.addOnCompleteListener { task ->
+            task.addOnCompleteListener { _task ->
                 try {
-                    action(task.getResult(ApiException::class.java)!!)
+                    action(_task.getResult(ApiException::class.java)!!)
                     println("--------------------Task success!-------------------")
                 } catch (apiException: ApiException) {
                     //TODO("Handle exception")

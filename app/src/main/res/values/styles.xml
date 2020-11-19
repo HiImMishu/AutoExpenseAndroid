@@ -1,8 +1,10 @@
 <resources>
     <style name="AppTheme" parent="Theme.MaterialComponents.Light">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorSecondary">@color/secondaryColor</item>
+        <item name="android:textColorSecondary">@color/secondaryTextColor</item>
+        <item name="colorError">@color/colorRed</item>
         <item name="android:windowAnimationStyle">@style/ActivityAnimations</item>
 
     </style>
@@ -22,6 +24,10 @@
     <style name="CarTitleText">
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CarTitleTextWhite" parent="CarTitleText">
+        <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
     <style name="CarTitleText24" parent="CarTitleText">

@@ -100,7 +100,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="?attr/homeAsUpIndicator" />
+                app:srcCompat="?attr/homeAsUpIndicator"
+                app:tint="@color/secondaryColor" />
 
             <ImageView
                 android:id="@+id/imageView5"

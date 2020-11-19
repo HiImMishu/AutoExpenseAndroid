@@ -149,37 +149,44 @@
             app:layout_constraintTop_toBottomOf="@+id/milage_text"
             tools:text="240800.00" />
 
-        <ExpandableListView
-            android:id="@+id/expandable_engine_info"
-            android:layout_width="match_parent"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/expandableEngineCard"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:visibility="@{(viewModel.engine != null) ? View.VISIBLE : View.GONE}"
+            app:cardCornerRadius="15dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/purchase_price_label" >
+            app:layout_constraintTop_toBottomOf="@+id/purchase_price_label">
 
-        </ExpandableListView>
+            <ExpandableListView
+                android:id="@+id/expandable_engine_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/darkerWhite"
+                android:cacheColorHint="@color/darkerWhite"
+                android:visibility="@{(viewModel.engine != null) ? View.VISIBLE : View.GONE}">
+
+            </ExpandableListView>
+        </androidx.cardview.widget.CardView>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/add_engine_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:onClick="@{() -> viewModel.addEngineClicked()}"
             android:text="@string/add_engine"
             android:textColor="@color/cardview_dark_background"
             android:visibility="@{(viewModel.engine == null) ? View.VISIBLE : View.GONE}"
-            android:onClick="@{() -> viewModel.addEngineClicked()}"
-            app:backgroundTint="@color/cardview_light_background"
-            app:cornerRadius="20dp"
+            app:backgroundTint="@color/darkerWhite"
+            app:cornerRadius="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/expandable_engine_info" />
+            app:layout_constraintTop_toBottomOf="@+id/expandableEngineCard" />
 
 
         <View

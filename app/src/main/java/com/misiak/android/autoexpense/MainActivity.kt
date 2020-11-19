@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener{controller, destination, arguments ->
+        findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener{ _, destination, _ ->
             if (destination.id == R.id.mainScreenFragment)
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
             else

@@ -35,7 +35,7 @@ class MainScreenFragment() : FragmentWithOverflowMenu() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main_screen, container, false)
         account = MainScreenFragmentArgs.fromBundle(requireArguments()).account
         val database = getDatabase(requireContext().applicationContext)
-        repository = CarRepository(database, account!!)
+        repository = CarRepository(database, account)
         val mainScreeViewModelFactory = MainScreeViewModelFactory(repository)
         mainScreenViewModel =
             ViewModelProvider(this, mainScreeViewModelFactory).get(MainScreenViewModel::class.java)
