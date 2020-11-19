@@ -21,6 +21,14 @@ class SaveOrUpdateViewModel(val repository: CarRepository) : ViewModel() {
         _connectionError.value = false
     }
 
+    private var _unknownError = MutableLiveData<Boolean>(false)
+    val unknownError: LiveData<Boolean>
+        get() = _unknownError
+
+    fun unknownErrorHandled() {
+        _unknownError.value = false
+    }
+
     private val _updateSuccess = MutableLiveData<Boolean>(false)
     val updateSuccess: LiveData<Boolean>
         get() = _updateSuccess
@@ -60,6 +68,7 @@ class SaveOrUpdateViewModel(val repository: CarRepository) : ViewModel() {
             is ApiResult.NetworkError -> _connectionError.value = true
             is ApiResult.AuthenticationError -> _tokenExpired.value = true
             is ApiResult.Success<*> -> _updateSuccess.value = true
+            else -> _unknownError.value = true
         }
     }
 }

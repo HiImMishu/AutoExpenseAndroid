@@ -16,7 +16,11 @@ import kotlinx.coroutines.withContext
 
 class CarRepository(private val database: AutoExpenseDatabase, var account: GoogleSignInAccount) {
 
-    private val token = "Bearer ${account.idToken!!}"
+    private var token = "Bearer ${account.idToken!!}"
+
+    fun updateToken(account: GoogleSignInAccount) {
+        token = "Bearer ${account.idToken!!}"
+    }
 
     suspend fun refreshCars(): ApiResult {
         return try {

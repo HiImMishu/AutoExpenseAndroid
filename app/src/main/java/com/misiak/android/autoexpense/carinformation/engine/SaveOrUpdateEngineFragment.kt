@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.material.snackbar.Snackbar
+import com.misiak.android.autoexpense.FragmentWithOverflowMenu
 import com.misiak.android.autoexpense.R
 import com.misiak.android.autoexpense.authentication.SignInFragment
 import com.misiak.android.autoexpense.database.entity.Engine
@@ -22,7 +23,7 @@ import com.misiak.android.autoexpense.mainscreen.saveorupdate.Action
 import com.misiak.android.autoexpense.repository.EngineRepository
 import kotlinx.android.synthetic.main.fragment_save_or_update_car.view.*
 
-class SaveOrUpdateEngineFragment : Fragment() {
+class SaveOrUpdateEngineFragment : FragmentWithOverflowMenu() {
 
     private lateinit var binding: FragmentSaveOrUpdateEngineBinding
     private lateinit var viewModel: SaveOrUpdateEngineViewModel
@@ -90,7 +91,7 @@ class SaveOrUpdateEngineFragment : Fragment() {
     }
 
     private fun updateRepositoryAccount(account: GoogleSignInAccount) {
-        repository.account = account
+        repository.updateToken(account)
         viewModel.tokenRefreshed()
         binding.editEngineCard.saveButton.performClick()
     }

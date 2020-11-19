@@ -14,7 +14,11 @@ import kotlinx.coroutines.withContext
 
 class FuelExpenseRepository(private val database: AutoExpenseDatabase, var account: GoogleSignInAccount) {
 
-    private val token = "Bearer ${account.idToken!!}"
+    private var token = "Bearer ${account.idToken!!}"
+
+    fun updateToken(account: GoogleSignInAccount) {
+        token = "Bearer ${account.idToken!!}"
+    }
 
     fun getFuelExpenseById(fuelExpenseId: Long): LiveData<FuelExpense> {
         return database.carDao.getFuelExpenseById(fuelExpenseId)

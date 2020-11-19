@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.material.snackbar.Snackbar
+import com.misiak.android.autoexpense.FragmentWithOverflowMenu
 import com.misiak.android.autoexpense.R
 import com.misiak.android.autoexpense.authentication.SignInFragment
 import com.misiak.android.autoexpense.database.getDatabase
@@ -21,7 +22,7 @@ import com.misiak.android.autoexpense.repository.CarRepository
 import kotlinx.android.synthetic.main.fragment_save_or_update_car.view.*
 import kotlin.properties.Delegates
 
-class CarInformationFragment : Fragment() {
+class CarInformationFragment : FragmentWithOverflowMenu() {
 
     private lateinit var viewModel: CarInformationViewModel
     private lateinit var binding: FragmentCarInformationBinding
@@ -153,7 +154,7 @@ class CarInformationFragment : Fragment() {
     }
 
     private fun updateRepositoryAccount(account: GoogleSignInAccount) {
-        repository.account = account
+        repository.updateToken(account)
         showSnackBar(requireActivity().getString(R.string.retry))
         viewModel.tokenRefreshed()
     }

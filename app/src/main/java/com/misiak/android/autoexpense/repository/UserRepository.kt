@@ -14,7 +14,11 @@ class UserRepository(
     account: GoogleSignInAccount
 ) {
 
-    private val token = "Bearer ${account.idToken!!}"
+    private var token = "Bearer ${account.idToken!!}"
+
+    fun updateToken(account: GoogleSignInAccount) {
+        token = "Bearer ${account.idToken!!}"
+    }
 
     suspend fun signInUser(): ApiResult {
         val userAlreadySignedInResult = checkUserAlreadySignedIn()

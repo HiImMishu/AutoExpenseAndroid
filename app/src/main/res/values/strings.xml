@@ -42,4 +42,5 @@
     <string name="internet_connection_error">Check your internet connection</string>
     <string name="operation_failed_error">Couldn\'t save data, try again later</string>
     <string name="retry">Please retry</string>
+    <string name="sign_out">Sign Out</string>
 </resources>

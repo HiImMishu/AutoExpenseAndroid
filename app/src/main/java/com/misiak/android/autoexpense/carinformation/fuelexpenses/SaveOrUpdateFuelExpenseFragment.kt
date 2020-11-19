@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.material.snackbar.Snackbar
+import com.misiak.android.autoexpense.FragmentWithOverflowMenu
 import com.misiak.android.autoexpense.R
 import com.misiak.android.autoexpense.authentication.SignInFragment
 import com.misiak.android.autoexpense.database.entity.FuelExpense
@@ -27,7 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.properties.Delegates
 
-class SaveOrUpdateFuelExpenseFragment : Fragment() {
+class SaveOrUpdateFuelExpenseFragment : FragmentWithOverflowMenu() {
 
     private lateinit var binding: FragmentSaveOrUpdateFuelExpenseBinding
     private lateinit var viewModel: SaveOrUpdateFuelExpenseViewModel
@@ -190,7 +191,7 @@ class SaveOrUpdateFuelExpenseFragment : Fragment() {
     }
 
     private fun updateRepositoryAccount(account: GoogleSignInAccount) {
-        repository.account = account
+        repository.updateToken(account)
         viewModel.tokenRefreshed()
         binding.editFuelExpenseCard.saveButton.performClick()
     }

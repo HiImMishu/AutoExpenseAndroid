@@ -122,11 +122,16 @@ class SignInFragment : Fragment() {
             task.addOnCompleteListener { task ->
                 try {
                     action(task.getResult(ApiException::class.java)!!)
+                    println("--------------------Task success!-------------------")
                 } catch (apiException: ApiException) {
                     //TODO("Handle exception")
                     println("Task error $apiException")
                 }
             }
+        }
+
+        fun signOut(context: Context) {
+            getGoogleSignInClient(context).signOut()
         }
 
         private fun getGoogleSignInClient(context: Context): GoogleSignInClient {

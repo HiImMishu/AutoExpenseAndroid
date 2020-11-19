@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.material.snackbar.Snackbar
+import com.misiak.android.autoexpense.FragmentWithOverflowMenu
 import com.misiak.android.autoexpense.R
 import com.misiak.android.autoexpense.authentication.SignInFragment
 import com.misiak.android.autoexpense.database.getDatabase
@@ -20,19 +20,20 @@ import com.misiak.android.autoexpense.databinding.FragmentMainScreenBinding
 import com.misiak.android.autoexpense.mainscreen.saveorupdate.Action
 import com.misiak.android.autoexpense.repository.CarRepository
 
-class MainScreenFragment() : Fragment() {
+class MainScreenFragment() : FragmentWithOverflowMenu() {
 
     private lateinit var mainScreenViewModel: MainScreenViewModel
     private lateinit var binding: FragmentMainScreenBinding
     private lateinit var itemTouchHelper: ItemTouchHelper
     private lateinit var repository: CarRepository
+    private lateinit var account: GoogleSignInAccount
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main_screen, container, false)
-        val account = arguments?.let { MainScreenFragmentArgs.fromBundle(it).account }
+        account = MainScreenFragmentArgs.fromBundle(requireArguments()).account
         val database = getDatabase(requireContext().applicationContext)
         repository = CarRepository(database, account!!)
         val mainScreeViewModelFactory = MainScreeViewModelFactory(repository)
@@ -47,26 +48,44 @@ class MainScreenFragment() : Fragment() {
         binding.viewModel = mainScreenViewModel
         binding.lifecycleOwner = this
 
+        setUpCarsListDataListener(adapter)
+        setUpConnectionErrorListener()
+        setUpOperationFailedListener()
+        setUpTokenExpirationListener()
+        setUpAddCarButtonListener(account)
+        setHasOptionsMenu(true)
+
+        (activity as AppCompatActivity).supportActionBar?.show()
+        return binding.root
+    }
+
+    private fun setUpCarsListDataListener(adapter: CarAdapter) {
         mainScreenViewModel.carsWithLastFuelExpense.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
             }
         })
+    }
 
+    private fun setUpConnectionErrorListener() {
         mainScreenViewModel.connectionError.observe(viewLifecycleOwner, Observer {
             if (it) {
-                showSnackBar("Check your internet connection.")
+                showSnackBar(requireActivity().getString(R.string.internet_connection_error))
                 mainScreenViewModel.connectionErrorHandled()
             }
         })
+    }
 
+    private fun setUpOperationFailedListener() {
         mainScreenViewModel.serverError.observe(viewLifecycleOwner, Observer {
             if (it) {
-                showSnackBar("Server Error, couldn't refresh data.")
+                showSnackBar(requireActivity().getString(R.string.operation_failed_error))
                 mainScreenViewModel.serverErrorHandled()
             }
         })
+    }
 
+    private fun setUpTokenExpirationListener() {
         mainScreenViewModel.tokenExpired.observe(viewLifecycleOwner, Observer {
             if (it) {
                 SignInFragment.getAccount(requireContext()) { account ->
@@ -76,18 +95,18 @@ class MainScreenFragment() : Fragment() {
                 }
             }
         })
-
-        binding.addCar.setOnClickListener {
-            navigateToEditCar(-1, account, Action.SAVE)
-        }
-
-        (activity as AppCompatActivity).supportActionBar?.show()
-        return binding.root
     }
 
     private fun updateRepositoryAccount(account: GoogleSignInAccount) {
-        repository.account = account
+        this.account = account
+        repository.updateToken(account)
         mainScreenViewModel.tokenExpiredHandled()
+    }
+
+    private fun setUpAddCarButtonListener(account: GoogleSignInAccount) {
+        binding.addCar.setOnClickListener {
+            navigateToEditCar(-1, account, Action.SAVE)
+        }
     }
 
     private fun showSnackBar(message: String) {
