@@ -25,10 +25,12 @@
             app:argType="com.google.android.gms.auth.api.signin.GoogleSignInAccount" />
         <action
             android:id="@+id/action_mainScreenFragment_to_carInformationFragment"
-            app:destination="@id/carInformationFragment" />
+            app:destination="@id/carInformationFragment"
+            app:popUpTo="@id/mainScreenFragment" />
         <action
             android:id="@+id/action_mainScreenFragment_to_saveOrUpdateCarFragment"
-            app:destination="@id/saveOrUpdateCarFragment" />
+            app:destination="@id/saveOrUpdateCarFragment"
+            app:popUpTo="@id/mainScreenFragment" />
     </fragment>
     <fragment
         android:id="@+id/carInformationFragment"
@@ -43,10 +45,12 @@
             app:argType="com.google.android.gms.auth.api.signin.GoogleSignInAccount" />
         <action
             android:id="@+id/action_carInformationFragment_to_saveOrUpdateFuelExpenseFragment"
-            app:destination="@id/saveOrUpdateFuelExpenseFragment" />
+            app:destination="@id/saveOrUpdateFuelExpenseFragment"
+            app:popUpTo="@id/carInformationFragment" />
         <action
             android:id="@+id/action_carInformationFragment_to_saveOrUpdateEngineFragment"
-            app:destination="@id/saveOrUpdateEngineFragment" />
+            app:destination="@id/saveOrUpdateEngineFragment"
+            app:popUpTo="@id/carInformationFragment" />
     </fragment>
     <fragment
         android:id="@+id/saveOrUpdateCarFragment"
