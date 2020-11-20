@@ -14,6 +14,10 @@ class MainScreenViewModel(private val repository: CarRepository) : ViewModel() {
     val carsWithLastFuelExpense: LiveData<List<CarWithLastFuelExpenseView>> =
         repository.getCarsWithRecentFuelExpense()
 
+    private val _resultIsEmpty = MutableLiveData<Boolean>(false)
+    val resultIsEmpty: LiveData<Boolean>
+        get() = _resultIsEmpty
+
     private val _connectionError = MutableLiveData<Boolean>(false)
     val connectionError: LiveData<Boolean>
         get() = _connectionError
@@ -28,6 +32,9 @@ class MainScreenViewModel(private val repository: CarRepository) : ViewModel() {
 
     init {
         refreshData()
+        carsWithLastFuelExpense.observeForever { list ->
+            _resultIsEmpty.value = list.isEmpty()
+        }
     }
 
     private fun refreshData() {
