@@ -27,7 +27,7 @@
     </tr>
     <tr>
         <td> Users uses Google Account to Sign In. API calls contains Google ID Token to Authenticate user on server side. In future I will be working on OAuth Authentication Server so that users can create accounts or Sign In with SSO (Facebook, Google, etc.) </td>
-        <td style="text-align: center"> <img src = "photos\sign_up_screen.png" style="max-width: none"></img> </td>
+        <td style="text-align: center"> <img src = "photos\sign_up_screen.png" style="max-width: none !important"></img> </td>
     </tr>
     <tr>
         <td> When user has not yet added any cars, there will be placeholder as  shown on screenshot.</td>
