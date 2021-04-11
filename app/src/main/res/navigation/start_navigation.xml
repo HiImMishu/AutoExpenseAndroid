@@ -51,6 +51,9 @@
             android:id="@+id/action_carInformationFragment_to_saveOrUpdateEngineFragment"
             app:destination="@id/saveOrUpdateEngineFragment"
             app:popUpTo="@id/carInformationFragment" />
+        <action
+            android:id="@+id/action_carInformationFragment_to_photoFragment"
+            app:destination="@id/photoFragment" />
     </fragment>
     <fragment
         android:id="@+id/saveOrUpdateCarFragment"
@@ -102,5 +105,17 @@
         <argument
             android:name="carId"
             app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/photoFragment"
+        android:name="com.misiak.android.autoexpense.carinformation.camera.PhotoFragment"
+        android:label="fragment_photo"
+        tools:layout="@layout/fragment_photo">
+        <argument
+            android:name="carId"
+            app:argType="long" />
+        <argument
+            android:name="account"
+            app:argType="com.google.android.gms.auth.api.signin.GoogleSignInAccount" />
     </fragment>
 </navigation>

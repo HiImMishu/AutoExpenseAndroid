@@ -1,5 +1,7 @@
 package com.misiak.android.autoexpense.carinformation
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,11 +17,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.misiak.android.autoexpense.FragmentWithOverflowMenu
 import com.misiak.android.autoexpense.R
 import com.misiak.android.autoexpense.authentication.SignInFragment
+import com.misiak.android.autoexpense.carinformation.camera.rotate
 import com.misiak.android.autoexpense.database.getDatabase
 import com.misiak.android.autoexpense.databinding.FragmentCarInformationBinding
 import com.misiak.android.autoexpense.mainscreen.saveorupdate.Action
 import com.misiak.android.autoexpense.repository.CarRepository
-import kotlinx.android.synthetic.main.fragment_save_or_update_car.view.*
+import java.io.File
 import kotlin.properties.Delegates
 
 class CarInformationFragment : FragmentWithOverflowMenu() {
@@ -52,6 +55,7 @@ class CarInformationFragment : FragmentWithOverflowMenu() {
         binding.fuelExpenseRecycler.adapter = adapter
         itemTouchHelper.attachToRecyclerView(binding.fuelExpenseRecycler)
 
+        setUpTakePhotoButtonListener()
         setUpAddEngineButtonListener()
         setUpCarDataListener()
         setUpFuelExpenseDataListener(adapter)
@@ -68,6 +72,21 @@ class CarInformationFragment : FragmentWithOverflowMenu() {
             ItemTouchHelper.LEFT -> viewModel.deleteFuelExpense(fuelExpenseId)
             ItemTouchHelper.RIGHT -> navigateToSaveOrUpdateFragment(Action.UPDATE, fuelExpenseId)
         }
+    }
+
+    private fun setUpTakePhotoButtonListener() {
+        viewModel.navigateToTakePhoto.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                navigateToTakePhotoFragment()
+                viewModel.doneNavigatingToTakePhoto()
+            }
+        })
+    }
+
+    private fun navigateToTakePhotoFragment() {
+        findNavController().navigate(
+            CarInformationFragmentDirections.actionCarInformationFragmentToPhotoFragment(viewModel.car.value!!.id, account)
+        )
     }
 
     private fun setUpAddEngineButtonListener() {
@@ -92,13 +111,27 @@ class CarInformationFragment : FragmentWithOverflowMenu() {
 
     private fun setUpCarDataListener() {
         viewModel.car.observe(viewLifecycleOwner, Observer { car ->
-            car?.let {
+            car?.let { it ->
                 if (it.engineId == null)
                     binding.expandableEngineInfo.setAdapter(EngineInformationAdapter(null, editEngineAction()))
                 else
                     setEngineObserver()
+
+                it.photoUrl?.let {photoUrl ->
+                    val bmp = BitmapFactory.decodeFile(getOutputDirectory().path + "/" + photoUrl)
+                    bmp?.let {bitmap ->
+                        binding.carImage.setImageBitmap(bitmap.rotate(90F))
+                    }
+                }
             }
         })
+    }
+
+    private fun getOutputDirectory(): File {
+        val mediaDir = this.requireContext().getExternalFilesDirs("data").firstOrNull()?.let {
+            File(it, resources.getString(R.string.app_name)).apply { mkdirs() } }
+        return if (mediaDir != null && mediaDir.exists())
+            mediaDir else this.requireContext().filesDir
     }
 
     private fun editEngineAction(): EngineActionListener {

@@ -186,7 +186,8 @@ class CarRepository(private val database: AutoExpenseDatabase, var account: Goog
                 mileage = it.mileage,
                 basePrice = it.basePrice,
                 userId = account.id,
-                engineId = it.engine?.id
+                engineId = it.engine?.id,
+                photoUrl = it.photoUrl
             )
         }.toTypedArray()
     }

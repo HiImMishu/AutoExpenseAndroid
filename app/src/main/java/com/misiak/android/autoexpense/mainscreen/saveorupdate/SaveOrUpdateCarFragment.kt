@@ -120,7 +120,8 @@ class SaveOrUpdateCarFragment : FragmentWithOverflowMenu() {
             mileage = binding.mileageText.text.toString().toDouble(),
             basePrice = binding.purchasePriceText.text.toString().toDouble(),
             userId = account.id,
-            engineId = viewModel.carToSave?.value?.engineId
+            engineId = viewModel.carToSave?.value?.engineId,
+            photoUrl = viewModel.carToSave?.value?.photoUrl
         )
     }
 

@@ -1,5 +1,6 @@
 package com.misiak.android.autoexpense.mainscreen
 
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.view.HapticFeedbackConstants
@@ -11,16 +12,18 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.misiak.android.autoexpense.R
+import com.misiak.android.autoexpense.carinformation.camera.rotate
 import com.misiak.android.autoexpense.database.entity.Car
 import com.misiak.android.autoexpense.database.view.CarWithLastFuelExpenseView
 import com.misiak.android.autoexpense.databinding.ListItemCarBinding
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
+import java.io.File
 
-class CarAdapter(private val clickListener: CarClickListener) :
+class CarAdapter(private val clickListener: CarClickListener, private val outputDirectory: File) :
     ListAdapter<CarWithLastFuelExpenseView, CarAdapter.ViewHolder>(CarDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarAdapter.ViewHolder {
-        return ViewHolder.from(parent)
+        return ViewHolder.from(parent, outputDirectory)
     }
 
     override fun onBindViewHolder(holder: CarAdapter.ViewHolder, position: Int) {
@@ -28,19 +31,25 @@ class CarAdapter(private val clickListener: CarClickListener) :
         holder.bind(clickListener, car)
     }
 
-    class ViewHolder private constructor(val binding: ListItemCarBinding) :
+    class ViewHolder private constructor(val binding: ListItemCarBinding, private val outputDirectory: File) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(clickListener: CarClickListener, item: CarWithLastFuelExpenseView) {
             binding.carWithFuelExpense = item
             binding.clickListener = clickListener
             binding.executePendingBindings()
+            item.car.photoUrl?.let {photoUrl ->
+                val bmp = BitmapFactory.decodeFile(outputDirectory.path + "/" + photoUrl)
+                bmp?.let {bitmap ->
+                    binding.carImage.setImageBitmap(bitmap.rotate(90F))
+                }
+            }
         }
 
         companion object {
-            fun from(parent: ViewGroup): ViewHolder {
+            fun from(parent: ViewGroup, outputDirectory: File): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ListItemCarBinding.inflate(layoutInflater, parent, false)
-                return ViewHolder(binding)
+                return ViewHolder(binding, outputDirectory)
             }
         }
     }

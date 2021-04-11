@@ -13,7 +13,8 @@ data class Car(
     val mileage: Double,
     val basePrice: Double?,
     var userId: String?,
-    var engineId: Long?
+    var engineId: Long?,
+    var photoUrl: String?
 )
 
 fun Car.asNetworkCar(): NetworkCar {
@@ -24,6 +25,7 @@ fun Car.asNetworkCar(): NetworkCar {
         productionYear = productionYear,
         mileage = mileage,
         basePrice = basePrice,
+        photoUrl = photoUrl,
         engine = null,
         user = null,
         fuelExpenses = null

@@ -47,7 +47,15 @@ class CarInformationViewModel(private val carId: Long, private val repository: C
         get() = _navigateToAddEngine
 
     fun doneNavigatingToAddEngine() {
-       _navigateToAddEngine.value = false
+        _navigateToAddEngine.value = false
+    }
+
+    private val _navigateToTakePhoto = MutableLiveData<Boolean>(false)
+    val navigateToTakePhoto: LiveData<Boolean>
+        get() = _navigateToTakePhoto
+
+    fun doneNavigatingToTakePhoto() {
+        _navigateToTakePhoto.value = false
     }
 
     fun deleteFuelExpense(fuelExpenseId: Long) {
@@ -62,5 +70,9 @@ class CarInformationViewModel(private val carId: Long, private val repository: C
 
     fun addEngineClicked() {
         _navigateToAddEngine.value = true
+    }
+
+    fun addPhotoClicked() {
+        _navigateToTakePhoto.value = true
     }
 }

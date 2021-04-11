@@ -44,7 +44,6 @@
                     android:id="@+id/car_image"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
-                    android:padding="8dp"
                     app:srcCompat="@drawable/car_miniature"
                     tools:srcCompat="@drawable/car_miniature" />
             </androidx.cardview.widget.CardView>

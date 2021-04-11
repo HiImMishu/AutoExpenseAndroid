@@ -19,6 +19,7 @@ import com.misiak.android.autoexpense.database.getDatabase
 import com.misiak.android.autoexpense.databinding.FragmentMainScreenBinding
 import com.misiak.android.autoexpense.mainscreen.saveorupdate.Action
 import com.misiak.android.autoexpense.repository.CarRepository
+import java.io.File
 
 class MainScreenFragment() : FragmentWithOverflowMenu() {
 
@@ -39,7 +40,7 @@ class MainScreenFragment() : FragmentWithOverflowMenu() {
         val mainScreeViewModelFactory = MainScreeViewModelFactory(repository)
         mainScreenViewModel =
             ViewModelProvider(this, mainScreeViewModelFactory).get(MainScreenViewModel::class.java)
-        val adapter = CarAdapter(carActionListener(account))
+        val adapter = CarAdapter(carActionListener(account), getOutputDirectory())
         val carItemTouchHelperCallback = CarItemTouchHelper()
 
         itemTouchHelper = ItemTouchHelper(carItemTouchHelperCallback)
@@ -57,6 +58,13 @@ class MainScreenFragment() : FragmentWithOverflowMenu() {
 
         (activity as AppCompatActivity).supportActionBar?.show()
         return binding.root
+    }
+
+    private fun getOutputDirectory(): File {
+        val mediaDir = this.requireContext().getExternalFilesDirs("data").firstOrNull()?.let {
+            File(it, resources.getString(R.string.app_name)).apply { mkdirs() } }
+        return if (mediaDir != null && mediaDir.exists())
+            mediaDir else this.requireContext().filesDir
     }
 
     private fun setUpCarsListDataListener(adapter: CarAdapter) {

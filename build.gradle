@@ -12,6 +12,7 @@ buildscript {
         version_moshi = "1.9.3"
         version_moshi_adapter = "1.11.0"
         version_material = "1.1.0-alpha09"
+        camerax_version = '1.0.0-rc01'
     }
     repositories {
         google()
